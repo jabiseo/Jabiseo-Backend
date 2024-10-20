@@ -1,0 +1,17 @@
+# api 모듈: 배포 모듈
+# --- -> 구분자 없는 default 영역
+spring:
+  config:
+    import: "classpath:/domain.yml,classpath:/infra.yml,classpath:/notification.yml"
+
+  profiles:
+    active: local # -- 기본 값은 local로 실행한다.
+    group:
+      local:
+        - "domain-local"
+        - "infra-local"
+        - "notification-local"
+      dev:
+        - "domain-dev"
+        - "infra-dev"
+        - "notification-dev"

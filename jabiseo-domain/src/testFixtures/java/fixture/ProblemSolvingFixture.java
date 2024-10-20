@@ -1,9 +1,9 @@
 package fixture;
 
-import com.jabiseo.learning.domain.Learning;
-import com.jabiseo.learning.domain.ProblemSolving;
-import com.jabiseo.member.domain.Member;
-import com.jabiseo.problem.domain.Problem;
+import com.jabiseo.domain.learning.domain.Learning;
+import com.jabiseo.domain.learning.domain.ProblemSolving;
+import com.jabiseo.domain.member.domain.Member;
+import com.jabiseo.domain.problem.domain.Problem;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;

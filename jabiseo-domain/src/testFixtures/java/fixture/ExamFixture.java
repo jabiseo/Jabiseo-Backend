@@ -1,7 +1,7 @@
 package fixture;
 
-import com.jabiseo.certificate.domain.Certificate;
-import com.jabiseo.certificate.domain.Exam;
+import com.jabiseo.domain.certificate.domain.Certificate;
+import com.jabiseo.domain.certificate.domain.Exam;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ExamFixture {

@@ -18,6 +18,8 @@ bin/
 !**/src/test/**/bin/
 application.properties
 *.DS_Store
+
+jabiseo-firebase-key.json
 ### IntelliJ IDEA ###
 .idea
 *.iws

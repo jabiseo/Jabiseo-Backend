@@ -1,9 +1,9 @@
 package fixture;
 
-import com.jabiseo.plan.domain.ActivityType;
-import com.jabiseo.plan.domain.GoalType;
-import com.jabiseo.plan.domain.Plan;
-import com.jabiseo.plan.domain.PlanItem;
+import com.jabiseo.domain.plan.domain.ActivityType;
+import com.jabiseo.domain.plan.domain.GoalType;
+import com.jabiseo.domain.plan.domain.Plan;
+import com.jabiseo.domain.plan.domain.PlanItem;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class PlanItemFixture {

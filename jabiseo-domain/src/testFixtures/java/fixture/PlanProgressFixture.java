@@ -1,8 +1,8 @@
 package fixture;
 
-import com.jabiseo.plan.domain.ActivityType;
-import com.jabiseo.plan.domain.GoalType;
-import com.jabiseo.plan.domain.PlanProgress;
+import com.jabiseo.domain.plan.domain.ActivityType;
+import com.jabiseo.domain.plan.domain.GoalType;
+import com.jabiseo.domain.plan.domain.PlanProgress;
 
 import java.time.LocalDate;
 

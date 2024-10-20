@@ -12,7 +12,7 @@
 
 ## 시스템 구성도
 
-<img src="./images/devserver.png" width="900">
+<img src="./images/v2Shorts.png" width="900">
 
 
 ### 도커 Service Name / Port(default) 현황
@@ -94,6 +94,28 @@
             4000
         </td>
     </tr>
+    <tr>
+        <td>
+            카프카
+        </td>
+        <td>
+            kafka
+        </td>
+        <td>
+            29092 
+        </td>
+    </tr>
+    <tr>
+        <td>
+            주키퍼
+        </td>
+        <td>
+            zookeeper
+        </td>
+        <td>
+            22181
+        </td>
+    </tr>
 </table>
 
 ---
@@ -148,3 +170,16 @@ docker compose down
 - Filebeat, Logstash 설정
 - filebeat.yml: filebeat 설정 파일
 - logstash.conf: logstash 설정 파일, OpenSearch 관련된 변수는 노션 참고
+
+### kafka/single
+- 단일 노드로 구성된 카프카 설정
+- Local,dev 개발 환경에서 테스트 용도로 사용
+- 시크릿 변수는 존재 X
+
+```shell
+$ docker compose exec kafka bash // 접속
+$ kafak-topics --bootstrap-server kafka:9092 --create --topic ${토픽} // 옵션 추가  가능
+$ kafka-topics --bootstrap-server kafka:9092 --describe --topic ${토픽} // 확인 가능
+
+...
+```

@@ -1,0 +1,27 @@
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = false
+}
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+
+    implementation 'org.springframework.kafka:spring-kafka:3.2.4'
+
+    // FCM 설정 추가
+    implementation 'com.google.firebase:firebase-admin:9.3.0'
+
+    implementation project(":jabiseo-domain")
+    implementation project(":jabiseo-infrastructure")
+    testImplementation(testFixtures(project(":jabiseo-domain")))
+
+}

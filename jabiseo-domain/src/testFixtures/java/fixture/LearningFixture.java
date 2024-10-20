@@ -1,9 +1,9 @@
 package fixture;
 
-import com.jabiseo.certificate.domain.Certificate;
-import com.jabiseo.learning.domain.Learning;
-import com.jabiseo.learning.domain.LearningMode;
-import com.jabiseo.member.domain.Member;
+import com.jabiseo.domain.certificate.domain.Certificate;
+import com.jabiseo.domain.learning.domain.Learning;
+import com.jabiseo.domain.learning.domain.LearningMode;
+import com.jabiseo.domain.member.domain.Member;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;

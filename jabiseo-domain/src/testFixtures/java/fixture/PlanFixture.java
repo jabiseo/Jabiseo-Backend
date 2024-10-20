@@ -1,7 +1,7 @@
 package fixture;
 
-import com.jabiseo.member.domain.Member;
-import com.jabiseo.plan.domain.Plan;
+import com.jabiseo.domain.member.domain.Member;
+import com.jabiseo.domain.plan.domain.Plan;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;

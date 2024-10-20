@@ -1,6 +1,6 @@
 package fixture;
 
-import com.jabiseo.problem.domain.ProblemInfo;
+import com.jabiseo.domain.problem.domain.ProblemInfo;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ProblemInfoFixture {

@@ -1,7 +1,7 @@
 package fixture;
 
-import com.jabiseo.member.domain.Member;
-import com.jabiseo.member.domain.OauthServer;
+import com.jabiseo.domain.member.domain.Member;
+import com.jabiseo.domain.member.domain.OauthServer;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class MemberFixture {

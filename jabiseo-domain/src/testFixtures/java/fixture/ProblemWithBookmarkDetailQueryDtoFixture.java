@@ -1,7 +1,7 @@
 package fixture;
 
-import com.jabiseo.problem.domain.Problem;
-import com.jabiseo.problem.dto.ProblemWithBookmarkDetailQueryDto;
+import com.jabiseo.domain.problem.domain.Problem;
+import com.jabiseo.domain.problem.dto.ProblemWithBookmarkDetailQueryDto;
 
 public class ProblemWithBookmarkDetailQueryDtoFixture {
     public static ProblemWithBookmarkDetailQueryDto createProblemWithBookmarkDetailQueryDto(Problem problem, boolean isBookmark) {
