@@ -59,7 +59,7 @@ public class Member implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_certificate_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
-     private Certificate currentCertificate;
+    private Certificate currentCertificate;
 
     @OneToMany(mappedBy = "member")
     @BatchSize(size = 100)
@@ -93,11 +93,11 @@ public class Member implements Serializable {
         }
     }
 
-    public void updateNickname(String nickname){
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public void updateProfileImage(String profileImage){
+    public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 

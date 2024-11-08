@@ -1,22 +1,23 @@
 package com.jabiseo.api.learning.application.usecase;
 
-import com.jabiseo.domain.certificate.domain.Certificate;
-import com.jabiseo.domain.certificate.domain.CertificateRepository;
-import com.jabiseo.domain.certificate.exception.CertificateBusinessException;
-import com.jabiseo.domain.certificate.exception.CertificateErrorCode;
-import com.jabiseo.domain.learning.domain.*;
 import com.jabiseo.api.learning.dto.CreateLearningRequest;
 import com.jabiseo.api.learning.dto.ProblemResultRequest;
+import com.jabiseo.domain.certificate.domain.Certificate;
+import com.jabiseo.domain.certificate.service.CertificateService;
+import com.jabiseo.domain.learning.domain.Learning;
+import com.jabiseo.domain.learning.domain.LearningMode;
+import com.jabiseo.domain.learning.domain.ProblemSolving;
+import com.jabiseo.domain.learning.service.LearningService;
+import com.jabiseo.domain.learning.service.ProblemSolvingService;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
-import com.jabiseo.domain.plan.domain.PlanProgressService;
+import com.jabiseo.domain.member.service.MemberService;
+import com.jabiseo.domain.plan.service.PlanProgressService;
 import com.jabiseo.domain.problem.domain.Problem;
-import com.jabiseo.domain.problem.domain.ProblemRepository;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;
 import com.jabiseo.domain.problem.exception.ProblemErrorCode;
+import com.jabiseo.domain.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -24,27 +25,24 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CreateLearningUseCase {
 
-    private final MemberRepository memberRepository;
-    private final CertificateRepository certificateRepository;
-    private final ProblemRepository problemRepository;
-    private final LearningRepository learningRepository;
-    private final ProblemSolvingRepository problemSolvingRepository;
+    private final MemberService memberService;
+    private final ProblemService problemService;
+    private final LearningService learningService;
+    private final ProblemSolvingService problemSolvingService;
     private final PlanProgressService planProgressService;
+    private final CertificateService certificateService;
 
     public Long execute(Long memberId, CreateLearningRequest request) {
 
-        Member member = memberRepository.getReferenceById(memberId);
-
-        Certificate certificate = certificateRepository.findById(request.certificateId())
-                .orElseThrow(() -> new CertificateBusinessException(CertificateErrorCode.CERTIFICATE_NOT_FOUND));
-
         validateDuplicatedSolving(request);
 
+        Member member = memberService.getById(memberId);
+        Certificate certificate = certificateService.getById(request.certificateId());
+
         Learning learning = Learning.of(LearningMode.valueOf(request.learningMode()), request.learningTime(), member, certificate);
-        learningRepository.save(learning);
+        learningService.save(learning);
 
         //문제들의 id 리스트를 뽑아내 한 번의 쿼리로 찾아옴
         List<Problem> solvedProblems = findSolvedProblems(request);
@@ -54,12 +52,12 @@ public class CreateLearningUseCase {
 
         //ProblemSolving 생성 및 저장
         List<ProblemSolving> problemSolvings = createProblemSolvings(request, solvedProblems, member, learning);
-        problemSolvingRepository.saveAll(problemSolvings);
+        problemSolvingService.saveAll(problemSolvings);
         planProgressService.updateProgress(learning, problemSolvings.size());
         return learning.getId();
     }
 
-    private static void validateDuplicatedSolving(CreateLearningRequest request) {
+    private void validateDuplicatedSolving(CreateLearningRequest request) {
         if (request.problems().stream().distinct().count() != request.problems().size()) {
             throw new ProblemBusinessException(ProblemErrorCode.DUPLICATED_SOLVING_PROBLEM);
         }
@@ -69,10 +67,10 @@ public class CreateLearningUseCase {
         List<Long> solvedProblemIds = request.problems().stream()
                 .map(ProblemResultRequest::problemId)
                 .toList();
-        return problemRepository.findAllById(solvedProblemIds);
+        return problemService.findAllByIdWithCertificate(solvedProblemIds);
     }
 
-    private static void validateSolvedProblems(CreateLearningRequest request, List<Problem> solvedProblems, Certificate certificate) {
+    private void validateSolvedProblems(CreateLearningRequest request, List<Problem> solvedProblems, Certificate certificate) {
         if (solvedProblems.size() != request.problems().size()) {
             throw new ProblemBusinessException(ProblemErrorCode.PROBLEM_NOT_FOUND);
         }

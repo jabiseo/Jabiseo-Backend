@@ -21,6 +21,10 @@ public class LearningService {
 
     private final LearningRepository learningRepository;
 
+    public void save(Learning learning) {
+        learningRepository.save(learning);
+    }
+
     public TodayLearningDto findTodayLearning(Member member) {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);

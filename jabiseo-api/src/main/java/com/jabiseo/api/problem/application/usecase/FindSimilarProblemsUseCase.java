@@ -1,17 +1,15 @@
 package com.jabiseo.api.problem.application.usecase;
 
-import com.jabiseo.domain.problem.domain.Problem;
 import com.jabiseo.api.problem.dto.FindSimilarProblemResponse;
+import com.jabiseo.domain.problem.domain.Problem;
 import com.jabiseo.domain.problem.dto.ProblemWithBookmarkSummaryQueryDto;
 import com.jabiseo.domain.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FindSimilarProblemsUseCase {
 

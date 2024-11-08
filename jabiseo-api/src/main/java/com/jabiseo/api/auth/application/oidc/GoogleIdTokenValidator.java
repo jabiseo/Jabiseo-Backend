@@ -4,6 +4,7 @@ package com.jabiseo.api.auth.application.oidc;
 import com.jabiseo.api.auth.application.oidc.property.GoogleOidcProperty;
 import com.jabiseo.domain.auth.exception.AuthenticationBusinessException;
 import com.jabiseo.domain.auth.exception.AuthenticationErrorCode;
+import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.infra.cache.RedisCacheRepository;
 import com.jabiseo.infra.client.NetworkApiException;
 import com.jabiseo.infra.client.oidc.GoogleAccountsClient;

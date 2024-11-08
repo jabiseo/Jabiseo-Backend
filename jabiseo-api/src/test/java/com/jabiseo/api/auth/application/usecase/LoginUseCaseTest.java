@@ -1,10 +1,9 @@
 package com.jabiseo.api.auth.application.usecase;
 
 import com.jabiseo.api.auth.application.JwtHandler;
-import com.jabiseo.api.auth.application.MemberFactory;
-import com.jabiseo.api.auth.application.oidc.OauthMemberInfo;
+import com.jabiseo.domain.member.service.MemberFactory;
+import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.api.auth.application.oidc.TokenValidatorManager;
-import com.jabiseo.api.auth.application.usecase.LoginUseCase;
 import com.jabiseo.api.auth.dto.LoginRequest;
 import com.jabiseo.api.auth.dto.LoginResponse;
 import com.jabiseo.infra.cache.RedisCacheRepository;

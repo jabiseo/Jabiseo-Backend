@@ -4,7 +4,7 @@ import com.jabiseo.domain.learning.domain.LearningMode;
 import com.jabiseo.domain.learning.domain.LearningRepository;
 import com.jabiseo.domain.learning.dto.LearningWithSolvingCountQueryDto;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.plan.domain.*;
+import com.jabiseo.domain.plan.service.PlanProgressService;
 import fixture.MemberFixture;
 import fixture.PlanFixture;
 import fixture.PlanItemFixture;

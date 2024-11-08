@@ -1,21 +1,19 @@
 package com.jabiseo.api.problem.application.usecase;
 
-import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.api.problem.dto.CertificateResponse;
 import com.jabiseo.api.problem.dto.FindProblemsResponse;
+import com.jabiseo.api.problem.dto.ProblemsDetailResponse;
+import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.certificate.service.CertificateService;
 import com.jabiseo.domain.problem.dto.ProblemWithBookmarkDetailQueryDto;
-import com.jabiseo.api.problem.dto.ProblemsDetailResponse;
 import com.jabiseo.domain.problem.service.ProblemService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FindProblemsUseCase {
 
@@ -27,17 +25,16 @@ public class FindProblemsUseCase {
     public FindProblemsResponse execute(@Nullable Long memberId, Long certificateId,
                                         @Nullable Long examId, List<Long> subjectIds, int count) {
 
-        Certificate certificate = certificateService.getById(certificateId);
+        Certificate certificate = certificateService.getByIdWithExamsAndSubjects(certificateId);
         certificateService.validateExamIdAndSubjectIds(certificate, examId, subjectIds);
 
         List<ProblemWithBookmarkDetailQueryDto> dtos =
                 problemService.findProblemsByExamIdAndSubjectIds(memberId, examId, subjectIds, count);
 
+        CertificateResponse certificateResponse = CertificateResponse.from(certificate);
         List<ProblemsDetailResponse> problemsDetailResponses = dtos.stream()
                 .map(ProblemsDetailResponse::from)
                 .toList();
-
-        CertificateResponse certificateResponse = CertificateResponse.from(certificate);
 
         return FindProblemsResponse.of(certificateResponse, problemsDetailResponses);
     }

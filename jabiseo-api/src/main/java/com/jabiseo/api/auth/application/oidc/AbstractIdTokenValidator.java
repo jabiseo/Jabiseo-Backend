@@ -2,6 +2,7 @@ package com.jabiseo.api.auth.application.oidc;
 
 
 import com.jabiseo.api.auth.application.oidc.property.OidcIdTokenProperty;
+import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.infra.client.oidc.OidcPublicKey;
 import com.jabiseo.domain.member.domain.OauthServer;
 

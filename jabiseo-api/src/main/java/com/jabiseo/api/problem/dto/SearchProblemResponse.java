@@ -9,7 +9,7 @@ public record SearchProblemResponse(
         Double score,
         ExamResponse examInfo,
         SubjectResponse subjectInfo,
-        boolean isBookmarked,
+        boolean isBookmark,
         String description
 ) {
     public static SearchProblemResponse from(ProblemWithBookmarkSummaryScoreQueryDto dto) {

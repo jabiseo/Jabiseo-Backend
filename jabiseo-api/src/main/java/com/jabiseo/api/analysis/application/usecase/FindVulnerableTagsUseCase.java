@@ -4,24 +4,22 @@ import com.jabiseo.api.analysis.dto.FindVulnerableTagResponse;
 import com.jabiseo.domain.analysis.service.AnalysisService;
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
+import com.jabiseo.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class FindVulnerableTagsUseCase {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final AnalysisService analysisService;
 
     public List<FindVulnerableTagResponse> execute(Long memberId) {
 
-        Member member = memberRepository.getReferenceById(memberId);
+        Member member = memberService.getByIdWithCertificate(memberId);
         member.validateCurrentCertificate();
         Certificate certificate = member.getCurrentCertificate();
 

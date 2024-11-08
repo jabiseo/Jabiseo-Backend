@@ -1,9 +1,8 @@
 package com.jabiseo.api.certificate.application.usecase;
 
-import com.jabiseo.api.certificate.application.usecase.FindCertificateDetailUseCase;
+import com.jabiseo.api.certificate.dto.FindCertificateDetailResponse;
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.certificate.domain.CertificateRepository;
-import com.jabiseo.api.certificate.dto.FindCertificateDetailResponse;
 import com.jabiseo.domain.certificate.exception.CertificateBusinessException;
 import com.jabiseo.domain.certificate.exception.CertificateErrorCode;
 import org.junit.jupiter.api.DisplayName;

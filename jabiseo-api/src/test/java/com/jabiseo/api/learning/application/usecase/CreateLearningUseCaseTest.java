@@ -1,6 +1,5 @@
 package com.jabiseo.api.learning.application.usecase;
 
-import com.jabiseo.api.learning.application.usecase.CreateLearningUseCase;
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.certificate.domain.CertificateRepository;
 import com.jabiseo.domain.certificate.exception.CertificateBusinessException;
@@ -13,7 +12,7 @@ import com.jabiseo.api.learning.dto.CreateLearningRequest;
 import com.jabiseo.api.learning.dto.ProblemResultRequest;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.domain.MemberRepository;
-import com.jabiseo.domain.plan.domain.PlanProgressService;
+import com.jabiseo.domain.plan.service.PlanProgressService;
 import com.jabiseo.domain.problem.domain.Problem;
 import com.jabiseo.domain.problem.domain.ProblemRepository;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;

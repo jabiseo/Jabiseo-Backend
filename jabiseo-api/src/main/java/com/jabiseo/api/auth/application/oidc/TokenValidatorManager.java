@@ -3,6 +3,7 @@ package com.jabiseo.api.auth.application.oidc;
 
 import com.jabiseo.domain.auth.exception.AuthenticationBusinessException;
 import com.jabiseo.domain.auth.exception.AuthenticationErrorCode;
+import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.domain.member.domain.OauthServer;
 import org.springframework.stereotype.Component;
 

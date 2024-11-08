@@ -1,9 +1,7 @@
 package com.jabiseo.domain.plan.domain;
 
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.plan.domain.PlanItemRepository;
-import com.jabiseo.domain.plan.domain.PlanRepository;
-import com.jabiseo.domain.plan.domain.PlanService;
+import com.jabiseo.domain.plan.service.PlanService;
 import com.jabiseo.domain.plan.exception.PlanBusinessException;
 import fixture.MemberFixture;
 import org.assertj.core.api.Assertions;

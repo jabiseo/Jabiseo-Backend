@@ -1,6 +1,7 @@
 package com.jabiseo.api.auth.application.oidc;
 
 import com.jabiseo.api.auth.application.oidc.property.KakaoOidcProperty;
+import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.infra.cache.RedisCacheRepository;
 import com.jabiseo.infra.client.oidc.KakaoKauthClient;
 import com.jabiseo.infra.client.NetworkApiException;
