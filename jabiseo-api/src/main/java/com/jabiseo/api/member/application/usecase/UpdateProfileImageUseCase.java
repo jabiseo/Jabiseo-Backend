@@ -18,8 +18,9 @@ public class UpdateProfileImageUseCase {
     private static final String PROFILE_IMAGE_PATH = "profile/";
 
     public UpdateProfileImageResponse execute(Long memberId, UpdateProfileImageRequest request) {
+        Member member = memberService.getById(memberId);
         String profileUrl = s3Uploader.upload(request.image(), PROFILE_IMAGE_PATH);
-        Member member = memberService.updateProfileImage(memberId, profileUrl);
+        memberService.updateProfileImage(member, profileUrl);
         return UpdateProfileImageResponse.of(member);
     }
 

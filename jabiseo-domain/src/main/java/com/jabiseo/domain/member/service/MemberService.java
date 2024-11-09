@@ -28,6 +28,7 @@ public class MemberService {
                 .orElseThrow(() -> new MemberBusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
+    @Transactional
     public Member getByOauthIdAndOauthServerOrCreateMember(OauthMemberInfo oauthMemberInfo) {
         return memberRepository.findByOauthIdAndOauthServer(oauthMemberInfo.getOauthId(), oauthMemberInfo.getOauthServer())
                 .orElseGet(() -> {
@@ -50,9 +51,8 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateProfileImage(Long memberId, String profileUrl) {
-        Member member = getById(memberId);
+    public Member updateProfileImage(Member member, String profileUrl) {
         member.updateProfileImage(profileUrl);
-        return member;
+        return memberRepository.save(member);
     }
 }

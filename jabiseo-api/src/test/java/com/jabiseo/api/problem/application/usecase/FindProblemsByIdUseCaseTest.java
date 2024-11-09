@@ -1,12 +1,11 @@
 package com.jabiseo.api.problem.application.usecase;
 
-import com.jabiseo.api.problem.application.usecase.FindProblemsByIdUseCase;
-import com.jabiseo.domain.certificate.domain.Certificate;
-import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
-import com.jabiseo.domain.problem.domain.Problem;
 import com.jabiseo.api.problem.dto.FindProblemsRequest;
 import com.jabiseo.api.problem.dto.FindProblemsResponse;
+import com.jabiseo.domain.certificate.domain.Certificate;
+import com.jabiseo.domain.member.domain.Member;
+import com.jabiseo.domain.member.service.MemberService;
+import com.jabiseo.domain.problem.domain.Problem;
 import com.jabiseo.domain.problem.dto.ProblemWithBookmarkDetailQueryDto;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;
 import com.jabiseo.domain.problem.exception.ProblemErrorCode;
@@ -28,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
-@DisplayName("문제 세트 조회 테스트")
+@DisplayName("문제 ID로 문제 세트 조회 테스트")
 @ExtendWith(MockitoExtension.class)
 class FindProblemsByIdUseCaseTest {
 
@@ -39,7 +38,7 @@ class FindProblemsByIdUseCaseTest {
     ProblemService problemService;
 
     @Mock
-    MemberRepository memberRepository;
+    MemberService memberService;
 
     @Test
     @DisplayName("북마크를 통한 문제 세트 조회 테스트를 성공한다.")
@@ -62,7 +61,8 @@ class FindProblemsByIdUseCaseTest {
                 createProblemWithBookmarkDetailQueryDto(problems.get(2), true)
         );
         FindProblemsRequest request = new FindProblemsRequest(problemIds);
-        given(memberRepository.getReferenceById(memberId)).willReturn(member);
+
+        given(memberService.getByIdWithCertificate(memberId)).willReturn(member);
         given(problemService.findProblemsById(memberId, problemIds)).willReturn(problemWithBookmarkDetailQueryDtos);
 
         //when
@@ -97,7 +97,8 @@ class FindProblemsByIdUseCaseTest {
                 createProblemWithBookmarkDetailQueryDto(problems.get(2), true)
         );
         FindProblemsRequest request = new FindProblemsRequest(requestProblemIds);
-        given(memberRepository.getReferenceById(memberId)).willReturn(member);
+
+        given(memberService.getByIdWithCertificate(memberId)).willReturn(member);
         given(problemService.findProblemsById(memberId, problemIds)).willReturn(problemWithBookmarkDetailQueryDtos);
 
         //when
@@ -122,7 +123,8 @@ class FindProblemsByIdUseCaseTest {
         member.updateCurrentCertificate(certificate);
         problemIds.forEach(problemId -> createProblem(problemId, certificate));
         FindProblemsRequest request = new FindProblemsRequest(problemIds);
-        given(memberRepository.getReferenceById(memberId)).willReturn(member);
+
+        given(memberService.getByIdWithCertificate(memberId)).willReturn(member);
         given(problemService.findProblemsById(memberId, problemIds)).willReturn(List.of());
 
         //when & then

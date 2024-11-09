@@ -1,14 +1,13 @@
 package com.jabiseo.api.auth.application.usecase;
 
 import com.jabiseo.api.auth.application.JwtHandler;
-import com.jabiseo.api.auth.application.usecase.ReissueUseCase;
 import com.jabiseo.api.auth.dto.ReissueRequest;
 import com.jabiseo.api.auth.dto.ReissueResponse;
 import com.jabiseo.domain.auth.exception.AuthenticationBusinessException;
 import com.jabiseo.domain.auth.exception.AuthenticationErrorCode;
-import com.jabiseo.infra.cache.RedisCacheRepository;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
+import com.jabiseo.domain.member.service.MemberService;
+import com.jabiseo.infra.cache.RedisCacheRepository;
 import fixture.MemberFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +30,7 @@ class ReissueUseCaseTest {
     ReissueUseCase reissueUseCase;
 
     @Mock
-    MemberRepository memberRepository;
+    MemberService memberService;
 
     @Mock
     RedisCacheRepository redisCacheRepository;
@@ -51,7 +50,6 @@ class ReissueUseCaseTest {
     void savedTokenIsNullThrownException() {
         //given
         Long memberId = 1L;
-        given(memberRepository.getReferenceById(memberId)).willReturn(MemberFixture.createMember(memberId));
         given(redisCacheRepository.findToken(memberId)).willReturn(Optional.empty());
 
         //when then
@@ -65,7 +63,7 @@ class ReissueUseCaseTest {
         //given
         Long memberId = 1L;
         String otherToken = "tokens";
-        given(memberRepository.getReferenceById(memberId)).willReturn(MemberFixture.createMember(memberId));
+        given(memberService.getById(memberId)).willReturn(MemberFixture.createMember(memberId));
         given(redisCacheRepository.findToken(memberId)).willReturn(Optional.of(otherToken));
 
         //when then
@@ -81,7 +79,7 @@ class ReissueUseCaseTest {
         Long memberId = 1L;
         Member member = MemberFixture.createMember(memberId);
         String newAccessToken = "accessToken";
-        given(memberRepository.getReferenceById(memberId)).willReturn(member);
+        given(memberService.getById(memberId)).willReturn(member);
         given(redisCacheRepository.findToken(memberId)).willReturn(Optional.of(request.refreshToken()));
         given(jwtHandler.createAccessToken(member)).willReturn(newAccessToken);
 

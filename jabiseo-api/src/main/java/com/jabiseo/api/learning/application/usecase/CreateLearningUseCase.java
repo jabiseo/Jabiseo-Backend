@@ -41,14 +41,14 @@ public class CreateLearningUseCase {
         Member member = memberService.getById(memberId);
         Certificate certificate = certificateService.getById(request.certificateId());
 
-        Learning learning = Learning.of(LearningMode.valueOf(request.learningMode()), request.learningTime(), member, certificate);
-        learningService.save(learning);
-
         //문제들의 id 리스트를 뽑아내 한 번의 쿼리로 찾아옴
         List<Problem> solvedProblems = findSolvedProblems(request);
 
         //요청 개수와 실제 데이터 개수가 다르면 옳지 않은 문제 ID가 요청되었다는 것
         validateSolvedProblems(request, solvedProblems, certificate);
+
+        Learning learning = Learning.of(LearningMode.valueOf(request.learningMode()), request.learningTime(), member, certificate);
+        learningService.save(learning);
 
         //ProblemSolving 생성 및 저장
         List<ProblemSolving> problemSolvings = createProblemSolvings(request, solvedProblems, member, learning);
