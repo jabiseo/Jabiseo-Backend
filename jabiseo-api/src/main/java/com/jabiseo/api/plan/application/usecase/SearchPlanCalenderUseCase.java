@@ -11,6 +11,7 @@ import com.jabiseo.domain.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,12 +22,12 @@ import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class SearchPlanCalenderUseCase {
 
     private final PlanProgressService planProgressService;
     private final PlanService planService;
-    private final PlanRepository planRepository;
     private final WeeklyDefineStrategy weeklyDefineStrategy;
 
     public PlanCalenderSearchResponse execute(Long memberId, Long planId, int year, int month) {

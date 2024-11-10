@@ -4,9 +4,11 @@ import com.jabiseo.api.problem.dto.CreateBookmarkRequest;
 import com.jabiseo.domain.problem.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CreateBookmarkUseCase {
 
     private final BookmarkService bookmarkService;

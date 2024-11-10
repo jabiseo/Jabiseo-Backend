@@ -5,7 +5,6 @@ import com.jabiseo.domain.certificate.domain.CertificateRepository;
 import com.jabiseo.domain.certificate.exception.CertificateBusinessException;
 import com.jabiseo.domain.certificate.exception.CertificateErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +23,8 @@ public class CertificateService {
     }
 
     public Certificate getByIdWithExamsAndSubjects(Long certificateId) {
-        Certificate certificate = certificateRepository.findByIdWithExams(certificateId)
+        return certificateRepository.findByIdWithExams(certificateId)
                 .orElseThrow(() -> new CertificateBusinessException(CertificateErrorCode.CERTIFICATE_NOT_FOUND));
-        // certificate의 subject들을 가져온다
-        Hibernate.initialize(certificate.getSubjects());
-        return certificate;
     }
 
     public void validateExamIdAndSubjectIds(Certificate certificate, Long examId, List<Long> subjectIds) {

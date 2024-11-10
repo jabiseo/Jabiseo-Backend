@@ -10,11 +10,13 @@ import com.jabiseo.domain.problem.service.ProblemService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FindProblemsUseCase {
 
     private final CertificateService certificateService;

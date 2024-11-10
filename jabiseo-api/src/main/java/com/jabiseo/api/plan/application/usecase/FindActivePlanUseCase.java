@@ -8,12 +8,14 @@ import com.jabiseo.domain.plan.domain.PlanItem;
 import com.jabiseo.domain.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FindActivePlanUseCase {
 
     private final MemberService memberService;

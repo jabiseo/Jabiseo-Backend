@@ -6,9 +6,11 @@ import com.jabiseo.domain.certificate.service.CertificateService;
 import com.jabiseo.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateMyCurrentCertificateUseCase {
 
     private final MemberService memberService;

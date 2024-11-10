@@ -10,9 +10,11 @@ import com.jabiseo.domain.member.service.MemberService;
 import com.jabiseo.infra.cache.RedisCacheRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReissueUseCase {
 
     private final MemberService memberService;

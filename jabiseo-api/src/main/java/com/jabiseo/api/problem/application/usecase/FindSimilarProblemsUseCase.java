@@ -6,11 +6,13 @@ import com.jabiseo.domain.problem.dto.ProblemWithBookmarkSummaryQueryDto;
 import com.jabiseo.domain.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FindSimilarProblemsUseCase {
 
     private final ProblemService problemService;

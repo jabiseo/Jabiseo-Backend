@@ -7,10 +7,12 @@ import com.jabiseo.domain.member.service.MemberService;
 import com.jabiseo.infra.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateProfileImageUseCase {
 
     private final MemberService memberService;

@@ -8,11 +8,13 @@ import com.jabiseo.domain.plan.service.PlanProgressService;
 import com.jabiseo.domain.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ModifyPlanUseCase {
 
     private final PlanService planService;
