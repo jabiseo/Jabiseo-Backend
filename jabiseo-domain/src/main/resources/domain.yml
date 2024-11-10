@@ -8,7 +8,6 @@ spring:
     properties:
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
 
-
 ---
 spring:
   config:

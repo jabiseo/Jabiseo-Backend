@@ -2,23 +2,20 @@ package com.jabiseo.api.certificate.application.usecase;
 
 import com.jabiseo.api.certificate.dto.FindCertificateDetailResponse;
 import com.jabiseo.domain.certificate.domain.Certificate;
-import com.jabiseo.domain.certificate.domain.CertificateRepository;
-import com.jabiseo.domain.certificate.exception.CertificateBusinessException;
-import com.jabiseo.domain.certificate.exception.CertificateErrorCode;
+import com.jabiseo.domain.certificate.service.CertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FindCertificateDetailUseCase {
 
-    private final CertificateRepository certificateRepository;
+    private final CertificateService certificateService;
 
     public FindCertificateDetailResponse execute(Long certificateId) {
-        Certificate certificate = certificateRepository.findById(certificateId)
-                .orElseThrow(() -> new CertificateBusinessException(CertificateErrorCode.CERTIFICATE_NOT_FOUND));
+        Certificate certificate = certificateService.getByIdWithExams(certificateId);
         return FindCertificateDetailResponse.from(certificate);
     }
 }

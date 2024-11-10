@@ -1,16 +1,11 @@
 package com.jabiseo.api.plan.application.usecase;
 
 import com.jabiseo.api.plan.dto.ActivePlanResponse;
-import com.jabiseo.api.plan.dto.PlanItemResponse;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
-import com.jabiseo.domain.plan.domain.GoalType;
+import com.jabiseo.domain.member.service.MemberService;
 import com.jabiseo.domain.plan.domain.Plan;
 import com.jabiseo.domain.plan.domain.PlanItem;
-import com.jabiseo.domain.plan.domain.PlanRepository;
-import com.jabiseo.domain.plan.exception.PlanBusinessException;
-import com.jabiseo.domain.plan.exception.PlanErrorCode;
-import com.jabiseo.api.problem.dto.CertificateResponse;
+import com.jabiseo.domain.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,29 +15,20 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class FindActivePlanUseCase {
 
-    private final MemberRepository memberRepository;
-    private final PlanRepository planRepository;
+    private final MemberService memberService;
+    private final PlanService planService;
 
     public ActivePlanResponse execute(Long memberId) {
-        Member member = memberRepository.getReferenceById(memberId);
+        Member member = memberService.getByIdWithCertificate(memberId);
         member.validateCurrentCertificate();
 
-        Plan plan = planRepository.findFirstByCertificateAndMember(member.getCurrentCertificate(), member)
-                .orElseThrow(() -> new PlanBusinessException(PlanErrorCode.NOT_FOUND_PLAN));
+        Plan plan = planService.findFirstByCertificateAndMemberWithPlanItems(member.getCurrentCertificate(), member);
 
         List<PlanItem> planItems = plan.getPlanItems();
 
-        return ActivePlanResponse.builder()
-                .planId(String.valueOf(plan.getId()))
-                .certificate(CertificateResponse.from(plan.getCertificate()))
-                .endAt(plan.getEndAt())
-                .createdAt(plan.getCreatedAt().toLocalDate())
-                .weeklyPlanItems(planItems.stream().filter((p -> p.getGoalType().equals(GoalType.WEEKLY))).map(PlanItemResponse::from).toList())
-                .dailyPlanItems(planItems.stream().filter((p -> p.getGoalType().equals(GoalType.DAILY))).map(PlanItemResponse::from).toList())
-                .build();
+        return ActivePlanResponse.of(plan, planItems);
     }
-
 }

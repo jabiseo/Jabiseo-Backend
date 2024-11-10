@@ -6,7 +6,7 @@ import com.jabiseo.api.problem.dto.FindProblemsResponse;
 import com.jabiseo.api.problem.dto.ProblemsDetailResponse;
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
+import com.jabiseo.domain.member.service.MemberService;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;
 import com.jabiseo.domain.problem.exception.ProblemErrorCode;
 import com.jabiseo.domain.problem.service.ProblemService;
@@ -17,15 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FindProblemsByIdUseCase {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final ProblemService problemService;
 
     public FindProblemsResponse execute(Long memberId, FindProblemsRequest request) {
-        Member member = memberRepository.getReferenceById(memberId);
+        Member member = memberService.getByIdWithCertificate(memberId);
         member.validateCurrentCertificate();
         Certificate certificate = member.getCurrentCertificate();
         List<Long> problemIds = request.problemIds()

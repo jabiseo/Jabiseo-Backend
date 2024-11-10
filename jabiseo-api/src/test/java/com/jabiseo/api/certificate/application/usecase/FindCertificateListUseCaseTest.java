@@ -1,9 +1,8 @@
 package com.jabiseo.api.certificate.application.usecase;
 
-import com.jabiseo.api.certificate.application.usecase.FindCertificateListUseCase;
-import com.jabiseo.domain.certificate.domain.Certificate;
-import com.jabiseo.domain.certificate.domain.CertificateRepository;
 import com.jabiseo.api.certificate.dto.FindCertificateListResponse;
+import com.jabiseo.domain.certificate.domain.Certificate;
+import com.jabiseo.domain.certificate.service.CertificateService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +24,7 @@ class FindCertificateListUseCaseTest {
     FindCertificateListUseCase sut;
 
     @Mock
-    CertificateRepository certificateRepository;
+    CertificateService certificateService;
 
     @Test
     @DisplayName("자격증 목록 조회를 성공한다.")
@@ -35,7 +34,7 @@ class FindCertificateListUseCaseTest {
         Long certificateId2 = 2L;
         Certificate certificate1 = createCertificate(certificateId1);
         Certificate certificate2 = createCertificate(certificateId2);
-        given(certificateRepository.findAll()).willReturn(List.of(certificate1, certificate2));
+        given(certificateService.findAll()).willReturn(List.of(certificate1, certificate2));
 
         //when
         List<FindCertificateListResponse> response = sut.execute();

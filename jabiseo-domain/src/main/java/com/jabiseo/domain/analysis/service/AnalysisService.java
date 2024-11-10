@@ -12,6 +12,7 @@ import com.jabiseo.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -24,6 +25,7 @@ import static java.time.LocalDateTime.now;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AnalysisService {
 
     private static final int DEFAULT_TAG_COUNT = 5;

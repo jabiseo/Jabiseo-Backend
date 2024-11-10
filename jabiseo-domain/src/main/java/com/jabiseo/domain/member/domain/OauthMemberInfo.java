@@ -1,6 +1,5 @@
-package com.jabiseo.api.auth.application.oidc;
+package com.jabiseo.domain.member.domain;
 
-import com.jabiseo.domain.member.domain.OauthServer;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -9,8 +9,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -33,6 +31,7 @@ public class Problem {
 
     private int answerNumber;
 
+    @Column(columnDefinition = "TEXT")
     private String solution;
 
     private int sequence;
@@ -52,10 +51,6 @@ public class Problem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_info_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private ProblemInfo problemInfo;
-
-    public List<String> getChoices() {
-        return List.of(choice1, choice2, choice3, choice4);
-    }
 
     private Problem(String description, String choice1, String choice2, String choice3, String choice4, int answerNumber,
                     String solution, int sequence, Certificate certificate, Exam exam, Subject subject, ProblemInfo problemInfo) {
@@ -80,7 +75,7 @@ public class Problem {
     }
 
     public void validateProblemInCertificate(Certificate certificate) {
-        if (!this.getCertificate().equals(certificate)) {
+        if (!this.getCertificate().getId().equals(certificate.getId())) {
             throw new CertificateBusinessException(CertificateErrorCode.PROBLEM_NOT_FOUND_IN_CERTIFICATE);
         }
     }

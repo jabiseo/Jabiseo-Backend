@@ -1,8 +1,8 @@
-package com.jabiseo.api.auth.application;
+package com.jabiseo.domain.member.service;
 
 
-import com.jabiseo.api.auth.application.oidc.OauthMemberInfo;
 import com.jabiseo.domain.member.domain.Member;
+import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.domain.member.domain.RandomNicknameGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

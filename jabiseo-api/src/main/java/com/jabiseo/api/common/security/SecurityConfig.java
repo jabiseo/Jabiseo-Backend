@@ -10,13 +10,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
-@Transactional
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

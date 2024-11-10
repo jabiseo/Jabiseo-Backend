@@ -1,4 +1,4 @@
-package com.jabiseo.domain.plan.domain;
+package com.jabiseo.domain.plan.service;
 
 
 import com.jabiseo.domain.learning.domain.Learning;
@@ -6,8 +6,10 @@ import com.jabiseo.domain.learning.domain.LearningMode;
 import com.jabiseo.domain.learning.domain.LearningRepository;
 import com.jabiseo.domain.learning.dto.LearningWithSolvingCountQueryDto;
 import com.jabiseo.domain.member.domain.Member;
+import com.jabiseo.domain.plan.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PlanProgressService {
 
@@ -34,6 +37,7 @@ public class PlanProgressService {
         return planProgressRepository.findAllByPlanAndProgressDateBetweenOrderByProgressDate(plan, startQueryDate, endQueryDate);
     }
 
+    @Transactional
     public void updateProgress(Learning learning, long count) {
         Member member = learning.getMember();
         Optional<Plan> plans = planRepository.findFirstByCertificateAndMember(member.getCurrentCertificate(), member);
@@ -46,6 +50,7 @@ public class PlanProgressService {
         planProgressRepository.saveAll(planProgress);
     }
 
+    @Transactional
     // 현재 범위 내 planItems 의 PlanProgress를 수정함
     public void modifyCurrentPlanProgress(Plan plan, List<PlanItem> dailyPlanItems, List<PlanItem> weeklyPlanItems) {
         // daily 작업 수행
@@ -54,6 +59,7 @@ public class PlanProgressService {
         modifyPlanProgress(plan, weeklyPlanItems, GoalType.WEEKLY);
     }
 
+    @Transactional
     // 현재 범위 내 PlanItems 의 PlanProgress를 삭제함
     public void removeCurrentPlanProgress(Plan plan, List<PlanItem> dailyPlanItems, List<PlanItem> weeklyPlanItems) {
         removePlanProgress(plan, dailyPlanItems, GoalType.DAILY);
@@ -78,11 +84,12 @@ public class PlanProgressService {
             return;
         }
         List<PlanProgress> progressList = getPlanProgressByPlanAndGoalType(plan, goalType);
-        items.forEach((item) -> {
-            progressList.stream().filter((progress) -> progress.getActivityType().equals(item.getActivityType())).findAny().ifPresent(
-                    planProgress -> planProgress.updateTargetValue(item.getTargetValue())
-            );
-        });
+        items.forEach((item) -> progressList.stream()
+                .filter((progress) -> progress.getActivityType().equals(item.getActivityType()))
+                .findAny()
+                .ifPresent(
+                        planProgress -> planProgress.updateTargetValue(item.getTargetValue())
+                ));
     }
 
     private List<PlanProgress> getPlanProgressByPlanAndGoalType(Plan plan, GoalType goalType) {
@@ -93,13 +100,12 @@ public class PlanProgressService {
     }
 
 
+    @Transactional
     // 플랜 생성 시, 설정된 플랜 기간 중에 학습한 기록이 있다면 반영한다
     public void createCurrentPlanProgress(Member member, List<PlanItem> planItems) {
         WeekPeriod currentWeekPeriod = weeklyDefineStrategy.getWeekPeriod(LocalDate.now());
 
-
         List<PlanProgress> daily = itemToDailyPlanProgress(planItems);
-
         List<PlanProgress> weekly = itemToWeeklyPlanProgress(planItems);
 
         learningCalculateAndSave(member, daily, LocalDate.now(), LocalDate.now());

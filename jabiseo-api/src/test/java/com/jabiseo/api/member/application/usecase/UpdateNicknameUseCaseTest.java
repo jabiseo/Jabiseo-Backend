@@ -1,10 +1,8 @@
 package com.jabiseo.api.member.application.usecase;
 
-import com.jabiseo.api.member.application.usecase.UpdateNicknameUseCase;
-import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
 import com.jabiseo.api.member.dto.UpdateNicknameRequest;
-import com.jabiseo.api.member.dto.UpdateNicknameResponse;
+import com.jabiseo.domain.member.domain.Member;
+import com.jabiseo.domain.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static fixture.MemberFixture.createMember;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("닉네임 수정 유스케이스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +23,7 @@ class UpdateNicknameUseCaseTest {
     UpdateNicknameUseCase updateNicknameUseCase;
 
     @Mock
-    MemberRepository memberRepository;
+    MemberService memberService;
 
     UpdateNicknameRequest request;
 
@@ -39,12 +37,12 @@ class UpdateNicknameUseCaseTest {
     void updateNicknameUseCaseSuccess() {
         //given
         Member member = createMember(1L);
-        given(memberRepository.getReferenceById(member.getId())).willReturn(member);
+        given(memberService.updateNickname(member.getId(), request.nickname())).willReturn(member);
 
         //when
-        UpdateNicknameResponse result = updateNicknameUseCase.execute(member.getId(), request);
+        updateNicknameUseCase.execute(member.getId(), request);
 
         //then
-        assertThat(result.nickname()).isEqualTo(request.nickname());
+        verify(memberService).updateNickname(member.getId(), request.nickname());
     }
 }

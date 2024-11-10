@@ -54,7 +54,7 @@ class FindProblemsUseCaseTest {
         List<Problem> problems = problemIds.stream().map(p -> createProblem(p, certificate)).toList();
         List<ProblemWithBookmarkDetailQueryDto> dtos = problems.stream().map(p -> createProblemWithBookmarkDetailQueryDto(p, true)).toList();
 
-        given(certificateService.getById(certificateId)).willReturn(certificate);
+        given(certificateService.getByIdWithExams(certificateId)).willReturn(certificate);
         given(problemService.findProblemsByExamIdAndSubjectIds(memberId, examId, subjectIds, count)).willReturn(dtos);
 
         // when

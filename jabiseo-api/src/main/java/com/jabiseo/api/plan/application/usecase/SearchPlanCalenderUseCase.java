@@ -1,13 +1,13 @@
 package com.jabiseo.api.plan.application.usecase;
 
+import com.jabiseo.api.plan.dto.calender.PlanCalenderSearchResponse;
 import com.jabiseo.api.plan.dto.calender.PlanProgressDateResponse;
+import com.jabiseo.api.plan.dto.calender.PlanProgressResponse;
 import com.jabiseo.domain.common.exception.BusinessException;
 import com.jabiseo.domain.common.exception.CommonErrorCode;
 import com.jabiseo.domain.plan.domain.*;
-import com.jabiseo.api.plan.dto.calender.PlanCalenderSearchResponse;
-import com.jabiseo.api.plan.dto.calender.PlanProgressResponse;
-import com.jabiseo.domain.plan.exception.PlanBusinessException;
-import com.jabiseo.domain.plan.exception.PlanErrorCode;
+import com.jabiseo.domain.plan.service.PlanProgressService;
+import com.jabiseo.domain.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,17 +22,16 @@ import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @Transactional(readOnly = true)
+@Slf4j
 public class SearchPlanCalenderUseCase {
 
     private final PlanProgressService planProgressService;
-    private final PlanRepository planRepository;
+    private final PlanService planService;
     private final WeeklyDefineStrategy weeklyDefineStrategy;
 
     public PlanCalenderSearchResponse execute(Long memberId, Long planId, int year, int month) {
-        Plan plan = planRepository.findById(planId)
-                        .orElseThrow(()-> new PlanBusinessException(PlanErrorCode.NOT_FOUND_PLAN));
+        Plan plan = planService.getByIdWithMember(planId);
         plan.checkOwner(memberId);
 
         List<PlanProgress> progressList = planProgressService.findByYearMonth(plan, year, month);

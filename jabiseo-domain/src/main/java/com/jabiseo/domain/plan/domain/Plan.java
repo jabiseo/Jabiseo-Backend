@@ -29,6 +29,12 @@ public class Plan {
     @Column(name = "plan_id")
     private Long id;
 
+    private LocalDate endAt;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "certificate_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Certificate certificate;
@@ -37,16 +43,9 @@ public class Plan {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Member member;
 
-    private LocalDate endAt;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
     @BatchSize(size = 100)
     private List<PlanItem> planItems = new ArrayList<>();
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
 
     public Plan(Certificate certificate, Member member, LocalDate endAt) {
         this.certificate = certificate;
