@@ -22,7 +22,7 @@ public class CertificateService {
                 .orElseThrow(() -> new CertificateBusinessException(CertificateErrorCode.CERTIFICATE_NOT_FOUND));
     }
 
-    public Certificate getByIdWithExamsAndSubjects(Long certificateId) {
+    public Certificate getByIdWithExams(Long certificateId) {
         return certificateRepository.findByIdWithExams(certificateId)
                 .orElseThrow(() -> new CertificateBusinessException(CertificateErrorCode.CERTIFICATE_NOT_FOUND));
     }
@@ -32,7 +32,7 @@ public class CertificateService {
     }
 
     public void validateExamIdAndSubjectIds(Long certificateId, Long examId, List<Long> subjectIds) {
-        Certificate certificate = getByIdWithExamsAndSubjects(certificateId);
+        Certificate certificate = getByIdWithExams(certificateId);
         certificate.validateExamIdAndSubjectIds(examId, subjectIds);
     }
 

@@ -36,7 +36,7 @@ class FindCertificateDetailUseCaseTest {
         Certificate certificate = createCertificate(certificateId);
         createExam(examId, certificate);
         createSubject(subjectId, certificate);
-        given(certificateService.getByIdWithExamsAndSubjects(certificateId)).willReturn(certificate);
+        given(certificateService.getByIdWithExams(certificateId)).willReturn(certificate);
 
         //when
         FindCertificateDetailResponse response = sut.execute(certificateId);

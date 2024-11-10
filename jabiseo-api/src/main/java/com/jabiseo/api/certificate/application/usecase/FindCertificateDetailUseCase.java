@@ -15,7 +15,7 @@ public class FindCertificateDetailUseCase {
     private final CertificateService certificateService;
 
     public FindCertificateDetailResponse execute(Long certificateId) {
-        Certificate certificate = certificateService.getByIdWithExamsAndSubjects(certificateId);
+        Certificate certificate = certificateService.getByIdWithExams(certificateId);
         return FindCertificateDetailResponse.from(certificate);
     }
 }

@@ -39,14 +39,14 @@ class CertificateServiceTest {
     }
 
     @Test
-    @DisplayName("[getByIdWithExamsAndSubjects() 테스트] 자격증이 존재하지 않을 경우 예외처리한다.")
-    void givenNoCertificate_whenGetByIdWithExamsAndSubjects_thenThrowException() {
+    @DisplayName("[getByIdWithExams() 테스트] 자격증이 존재하지 않을 경우 예외처리한다.")
+    void givenNoCertificate_whenGetByIdWithExams_thenThrowException() {
         // given
         Long certificateId = 1L;
         given(certificateRepository.findByIdWithExams(certificateId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> sut.getByIdWithExamsAndSubjects(certificateId))
+        assertThatThrownBy(() -> sut.getByIdWithExams(certificateId))
                 .isInstanceOf(CertificateBusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", CertificateErrorCode.CERTIFICATE_NOT_FOUND);
     }

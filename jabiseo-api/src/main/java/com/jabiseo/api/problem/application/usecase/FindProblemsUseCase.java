@@ -27,7 +27,7 @@ public class FindProblemsUseCase {
     public FindProblemsResponse execute(@Nullable Long memberId, Long certificateId,
                                         @Nullable Long examId, List<Long> subjectIds, int count) {
 
-        Certificate certificate = certificateService.getByIdWithExamsAndSubjects(certificateId);
+        Certificate certificate = certificateService.getByIdWithExams(certificateId);
         certificateService.validateExamIdAndSubjectIds(certificate, examId, subjectIds);
 
         List<ProblemWithBookmarkDetailQueryDto> dtos =
