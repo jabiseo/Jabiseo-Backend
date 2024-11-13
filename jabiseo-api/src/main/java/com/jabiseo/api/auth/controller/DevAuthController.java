@@ -2,6 +2,8 @@ package com.jabiseo.api.auth.controller;
 
 import com.jabiseo.api.auth.application.DevLoginHelper;
 import com.jabiseo.api.auth.dto.LoginResponse;
+import com.jabiseo.api.config.deviceinfo.DeviceInfo;
+import com.jabiseo.api.config.deviceinfo.RequestDeviceInfo;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -22,7 +24,8 @@ public class DevAuthController {
 
     @GetMapping("/dev/auth")
     public ResponseEntity<?> devAuth(
-            @RequestParam(value = "member-id") @NotBlank String memberId
+            @RequestParam(value = "member-id") @NotBlank String memberId,
+            @RequestDeviceInfo DeviceInfo info
     ) {
 
         LoginResponse result = loginHelper.login(Long.parseLong(memberId));
