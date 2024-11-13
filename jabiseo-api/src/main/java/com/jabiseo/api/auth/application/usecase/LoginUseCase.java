@@ -9,6 +9,7 @@ import com.jabiseo.domain.auth.domain.AuthService;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.domain.member.domain.OauthServer;
+import com.jabiseo.domain.member.service.DeviceTokenService;
 import com.jabiseo.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class LoginUseCase {
     private final JwtHandler jwtHandler;
     private final MemberService memberService;
     private final AuthService authService;
+    private final DeviceTokenService deviceTokenService;
 
     public LoginResponse execute(LoginRequest loginRequest, String deviceId) {
         OauthMemberInfo oauthMemberInfo = tokenValidatorManager.validate(loginRequest.idToken(), OauthServer.valueOf(loginRequest.oauthServer()));
@@ -32,6 +34,7 @@ public class LoginUseCase {
         String accessToken = jwtHandler.createAccessToken(member);
         String refreshToken = jwtHandler.createRefreshToken();
         authService.login(Auth.create(deviceId, member.getId(), refreshToken));
+        deviceTokenService.loginToken(member, loginRequest.fcmToken(), deviceId);
 
         return new LoginResponse(accessToken, refreshToken);
     }

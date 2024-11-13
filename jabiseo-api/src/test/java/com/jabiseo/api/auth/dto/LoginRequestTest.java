@@ -1,6 +1,5 @@
 package com.jabiseo.api.auth.dto;
 
-import com.jabiseo.api.auth.dto.LoginRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -34,7 +33,8 @@ class LoginRequestTest {
         //given
         String idToken = null;
         String oauthServer = null;
-        LoginRequest loginRequest = new LoginRequest(idToken, oauthServer);
+        String fcmToken = null;
+        LoginRequest loginRequest = new LoginRequest(idToken, oauthServer, fcmToken);
 
         //when
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(loginRequest);
@@ -48,7 +48,8 @@ class LoginRequestTest {
     @ValueSource(strings = {"kakao", "kakakkao", "", "value", "ggogo", "KAKAOOO"})
     void oauthServerNotAllowInputsThrowException(String oauthServer) {
         String idToken = "IdTokens..";
-        LoginRequest loginRequest = new LoginRequest(idToken, oauthServer);
+        String fcmToken = null;
+        LoginRequest loginRequest = new LoginRequest(idToken, oauthServer, fcmToken);
 
         //when
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(loginRequest);
@@ -63,7 +64,9 @@ class LoginRequestTest {
     void LoginRequestSuccess(String oauthServer) {
         //given
         String idToken = "IdTokens..";
-        LoginRequest loginRequest = new LoginRequest(idToken, oauthServer);
+
+        String fcmToken = "fcmToken";
+        LoginRequest loginRequest = new LoginRequest(idToken, oauthServer, fcmToken);
 
         //when
         Set<ConstraintViolation<LoginRequest>> violations = validator.validate(loginRequest);

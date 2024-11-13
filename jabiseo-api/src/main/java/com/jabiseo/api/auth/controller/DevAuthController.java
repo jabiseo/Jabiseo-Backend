@@ -22,10 +22,11 @@ public class DevAuthController {
     @GetMapping("/dev/auth")
     public ResponseEntity<?> devAuth(
             @RequestParam(value = "member-id") @NotBlank String memberId,
+            @RequestParam(value = "fcm-token", required = false) String token,
             @RequestDeviceInfo DeviceInfo deviceInfo
     ) {
 
-        LoginResponse result = loginHelper.login(Long.parseLong(memberId), deviceInfo.getDeviceId());
+        LoginResponse result = loginHelper.login(Long.parseLong(memberId), deviceInfo.getDeviceId(), token);
         return ResponseEntity.ok(result);
     }
 

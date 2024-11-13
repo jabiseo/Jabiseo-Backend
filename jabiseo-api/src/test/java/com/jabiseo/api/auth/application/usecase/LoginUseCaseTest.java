@@ -9,6 +9,7 @@ import com.jabiseo.domain.auth.domain.AuthService;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.domain.member.domain.OauthServer;
+import com.jabiseo.domain.member.service.DeviceTokenService;
 import com.jabiseo.domain.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,12 +42,15 @@ class LoginUseCaseTest {
 
     @Mock
     MemberService memberService;
+    @Mock
+    DeviceTokenService deviceTokenService;
+
 
     @Test
     @DisplayName("로그인 이후 Jwt를 발급 및 저장한다.")
     void loginSuccessCreateJwtAndSave() throws Exception {
         //given
-        LoginRequest request = new LoginRequest("idToken", "KAKAO");
+        LoginRequest request = new LoginRequest("idToken", "KAKAO", "token");
         OauthMemberInfo memberInfo = new OauthMemberInfo("id", OauthServer.KAKAO, "email@emil.com");
         Member member = createMember(1L);
         String access = "access";
@@ -64,5 +68,6 @@ class LoginUseCaseTest {
         assertThat(result.accessToken()).isEqualTo(access);
         assertThat(result.refreshToken()).isEqualTo(refresh);
         verify(authService, times(1)).login(Auth.create(deviceId, member.getId(), refresh));
+        verify(deviceTokenService, times(1)).loginToken(member, request.fcmToken(), deviceId);
     }
 }

@@ -8,6 +8,7 @@ public record LoginRequest(
         @NotNull
         String idToken,
         @EnumValid(enumClass = OauthServer.class, message = "oauthServer Type이 올바르지 않습니다.")
-        String oauthServer
+        String oauthServer,
+        String fcmToken
 ) {
 }
