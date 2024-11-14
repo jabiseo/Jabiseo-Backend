@@ -22,30 +22,11 @@ public class RedisCacheRepository {
 
     private final RedisTemplate<String, String> redisStringTemplate;
     private final ValueOperations<String, String> operation;
-    private static final String MEMBER_TOKEN_PREFIX = "member_token:";
     private final ObjectMapper mapper = new ObjectMapper();
 
     public RedisCacheRepository(RedisTemplate<String, String> redisStringTemplate) {
         this.redisStringTemplate = redisStringTemplate;
         this.operation = redisStringTemplate.opsForValue();
-    }
-
-
-    public void saveToken(Long memberId, String value) {
-        operation.set(toMemberTokenKey(memberId), value);
-    }
-
-    public Optional<String> findToken(Long memberId) {
-        String token = operation.get(toMemberTokenKey(memberId));
-        return Optional.ofNullable(token);
-    }
-
-    public void deleteToken(Long memberId) {
-        operation.getAndDelete(toMemberTokenKey(memberId));
-    }
-
-    private String toMemberTokenKey(Long id) {
-        return MEMBER_TOKEN_PREFIX + id.toString();
     }
 
     public void savePublicKey(String key, List<OidcPublicKey> publicKeys) {

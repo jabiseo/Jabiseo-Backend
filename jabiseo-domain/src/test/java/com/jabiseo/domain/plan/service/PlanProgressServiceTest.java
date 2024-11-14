@@ -98,7 +98,6 @@ class PlanProgressServiceTest {
         verify(planProgressRepository, times(1)).saveAll(any());
     }
 
-    //TODO: 해결해야 함
     @Test
     @DisplayName("calculateProgress 메소드 progress 계산 로직 테스트")
     void calculateProgressTest() {
@@ -113,32 +112,32 @@ class PlanProgressServiceTest {
 
 
         //when
-//        List<PlanProgress> result = planProgressService.calculateProgress(planProgresses, datas);
-//
-//        //then
-//        result.forEach((planProgress -> {
-//            long expectedValue = -1;
-//            if (planProgress.getActivityType().equals(ActivityType.EXAM)) {
-//                expectedValue = datas.stream()
-//                        .filter(pi -> pi.getMode().equals(LearningMode.EXAM))
-//                        .count();
-//            }
-//            if (planProgress.getActivityType().equals(ActivityType.STUDY)) {
-//                expectedValue = datas.stream()
-//                        .filter(pi -> pi.getMode().equals(LearningMode.STUDY))
-//                        .count();
-//            }
-//            if (planProgress.getActivityType().equals(ActivityType.PROBLEM)) {
-//                expectedValue = datas.stream()
-//                        .mapToLong(LearningWithSolvingCountQueryDto::getSolvingCount).sum();
-//            }
-//            if (planProgress.getActivityType().equals(ActivityType.TIME)) {
-//                expectedValue = datas.stream()
-//                        .mapToLong(LearningWithSolvingCountQueryDto::getLearningTime).sum();
-//            }
-//
-//            assertThat(planProgress.getCompletedValue()).isEqualTo(expectedValue);
-//        }));
+        List<PlanProgress> result = planProgressService.calculateProgress(planProgresses, datas);
+
+        //then
+        result.forEach((planProgress -> {
+            long expectedValue = -1;
+            if (planProgress.getActivityType().equals(ActivityType.EXAM)) {
+                expectedValue = datas.stream()
+                        .filter(pi -> pi.getMode().equals(LearningMode.EXAM))
+                        .count();
+            }
+            if (planProgress.getActivityType().equals(ActivityType.STUDY)) {
+                expectedValue = datas.stream()
+                        .filter(pi -> pi.getMode().equals(LearningMode.STUDY))
+                        .count();
+            }
+            if (planProgress.getActivityType().equals(ActivityType.PROBLEM)) {
+                expectedValue = datas.stream()
+                        .mapToLong(LearningWithSolvingCountQueryDto::getSolvingCount).sum();
+            }
+            if (planProgress.getActivityType().equals(ActivityType.TIME)) {
+                expectedValue = datas.stream()
+                        .mapToLong(LearningWithSolvingCountQueryDto::getLearningTime).sum();
+            }
+
+            assertThat(planProgress.getCompletedValue()).isEqualTo(expectedValue);
+        }));
 
     }
 

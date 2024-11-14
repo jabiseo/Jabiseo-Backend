@@ -1,6 +1,7 @@
 package com.jabiseo.api.config;
 
 import com.jabiseo.api.config.auth.AuthenticatedMemberArgumentResolver;
+import com.jabiseo.api.config.deviceinfo.RequestDeviceInfoArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -27,8 +28,15 @@ public class WebConfig implements WebMvcConfigurer {
         return new AuthenticatedMemberArgumentResolver();
     }
 
+    @Bean
+    HandlerMethodArgumentResolver requestDeviceInfoArgumentResolver() {
+        return new RequestDeviceInfoArgumentResolver();
+    }
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authenticatedMemberArgumentResolver());
+        resolvers.add(requestDeviceInfoArgumentResolver());
     }
+
 }
