@@ -98,7 +98,6 @@ class PlanProgressServiceTest {
         verify(planProgressRepository, times(1)).saveAll(any());
     }
 
-    //TODO: 해결해야 함
     @Test
     @DisplayName("calculateProgress 메소드 progress 계산 로직 테스트")
     void calculateProgressTest() {

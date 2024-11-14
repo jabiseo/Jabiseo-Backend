@@ -27,7 +27,7 @@ public class RequestDeviceInfoArgumentResolver implements HandlerMethodArgumentR
 
         if(deviceId == null) {
             log.warn("Request device id is empty");
-            throw new BusinessException(CommonErrorCode.INVALID_REQUEST_PARAMETER);
+            throw new BusinessException(CommonErrorCode.INVALID_REQUEST_HEADER);
         }
 
         return new DeviceInfo(deviceId);
