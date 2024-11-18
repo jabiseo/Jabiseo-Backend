@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface LearningRepository extends JpaRepository<Learning, Long>, LearningQueryDslRepository {
 
-    @Query("select l from Learning l join fetch l.problemSolvings where l.member = :member and l.createdAt between :startDateTime and :endDateTime")
+    @Query("SELECT l FROM Learning l JOIN FETCH l.problemSolvings WHERE l.member = :member AND l.createdAt BETWEEN :startDateTime AND :endDateTime")
     List<Learning> findByMemberAndCreatedAtBetweenWithProblemSolvings(Member member, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 }
