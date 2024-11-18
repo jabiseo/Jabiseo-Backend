@@ -9,6 +9,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByOauthIdAndOauthServer(String oauthId, OauthServer oauthServer);
 
-    @Query("SELECT m FROM Member m JOIN FETCH m.currentCertificate WHERE m.id = :memberId")
+    @Query("SELECT m FROM Member m LEFT JOIN FETCH m.currentCertificate WHERE m.id = :memberId")
     Optional<Member> findByIdWithCertificate(Long memberId);
+
 }
