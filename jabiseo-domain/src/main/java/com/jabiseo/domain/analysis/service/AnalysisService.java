@@ -7,7 +7,7 @@ import com.jabiseo.domain.analysis.exception.AnalysisBusinessException;
 import com.jabiseo.domain.analysis.exception.AnalysisErrorCode;
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.learning.domain.ProblemSolving;
-import com.jabiseo.domain.learning.domain.ProblemSolvingRepository;
+import com.jabiseo.domain.learning.repository.ProblemSolvingRepository;
 import com.jabiseo.domain.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

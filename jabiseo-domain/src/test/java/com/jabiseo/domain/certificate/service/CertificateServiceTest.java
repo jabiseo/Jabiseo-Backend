@@ -1,6 +1,6 @@
 package com.jabiseo.domain.certificate.service;
 
-import com.jabiseo.domain.certificate.domain.CertificateRepository;
+import com.jabiseo.domain.certificate.repository.CertificateRepository;
 import com.jabiseo.domain.certificate.exception.CertificateBusinessException;
 import com.jabiseo.domain.certificate.exception.CertificateErrorCode;
 import org.junit.jupiter.api.DisplayName;

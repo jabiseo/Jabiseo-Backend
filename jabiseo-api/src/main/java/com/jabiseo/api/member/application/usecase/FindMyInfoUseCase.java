@@ -1,6 +1,6 @@
 package com.jabiseo.api.member.application.usecase;
 
-import com.jabiseo.api.member.dto.FindMyInfoResponse;
+import com.jabiseo.api.member.dto.response.FindMyInfoResponse;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,7 @@
 package com.jabiseo.infra.cache;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jabiseo.domain.auth.domain.Auth;
-import com.jabiseo.domain.auth.domain.AuthRepository;
+import com.jabiseo.domain.auth.repository.AuthRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

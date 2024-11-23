@@ -1,9 +1,8 @@
 package com.jabiseo.api.problem.application.usecase;
 
-import com.jabiseo.api.problem.application.usecase.FindSimilarProblemsUseCase;
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.problem.domain.Problem;
-import com.jabiseo.api.problem.dto.FindSimilarProblemResponse;
+import com.jabiseo.api.problem.dto.response.FindSimilarProblemResponse;
 import com.jabiseo.domain.problem.dto.ProblemWithBookmarkSummaryQueryDto;
 import com.jabiseo.domain.problem.service.ProblemService;
 import org.junit.jupiter.api.DisplayName;

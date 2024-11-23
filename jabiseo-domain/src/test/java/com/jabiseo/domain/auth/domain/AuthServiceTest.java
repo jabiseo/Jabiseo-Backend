@@ -2,6 +2,7 @@ package com.jabiseo.domain.auth.domain;
 
 import com.jabiseo.domain.auth.exception.AuthenticationBusinessException;
 import com.jabiseo.domain.auth.exception.AuthenticationErrorCode;
+import com.jabiseo.domain.auth.repository.AuthRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

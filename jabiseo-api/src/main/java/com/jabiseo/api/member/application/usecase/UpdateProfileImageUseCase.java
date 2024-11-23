@@ -1,7 +1,7 @@
 package com.jabiseo.api.member.application.usecase;
 
-import com.jabiseo.api.member.dto.UpdateProfileImageRequest;
-import com.jabiseo.api.member.dto.UpdateProfileImageResponse;
+import com.jabiseo.api.member.dto.request.UpdateProfileImageRequest;
+import com.jabiseo.api.member.dto.response.UpdateProfileImageResponse;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;
 import com.jabiseo.infra.s3.S3Uploader;

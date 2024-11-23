@@ -3,7 +3,6 @@ package com.jabiseo.api.notification.controller;
 
 import com.jabiseo.api.config.auth.AuthMember;
 import com.jabiseo.api.config.auth.AuthenticatedMember;
-import com.jabiseo.domain.member.domain.MemberRepository;
 import com.jabiseo.domain.notification.domain.Notification;
 import com.jabiseo.domain.notification.domain.NotificationSender;
 import com.jabiseo.domain.notification.domain.PushType;
@@ -25,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
 
     private final NotificationSender notificationSender;
-    private final MemberRepository memberRepository;
-
 
     @PostMapping("/api/notification/test")
     public ResponseEntity<Void> sendNotification(

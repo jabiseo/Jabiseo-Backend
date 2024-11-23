@@ -1,11 +1,15 @@
 package com.jabiseo.api.member.controller;
 
 import com.jabiseo.api.member.application.usecase.*;
-import com.jabiseo.api.member.dto.*;
 import com.jabiseo.api.config.auth.AuthMember;
 import com.jabiseo.api.config.auth.AuthenticatedMember;
-import com.jabiseo.api.member.application.usecase.*;
-import com.jabiseo.api.member.dto.*;
+import com.jabiseo.api.member.dto.request.UpdateMyCurrentCertificateRequest;
+import com.jabiseo.api.member.dto.request.UpdateNicknameRequest;
+import com.jabiseo.api.member.dto.request.UpdateProfileImageRequest;
+import com.jabiseo.api.member.dto.response.FindMyCurrentCertificateResponse;
+import com.jabiseo.api.member.dto.response.FindMyInfoResponse;
+import com.jabiseo.api.member.dto.response.UpdateNicknameResponse;
+import com.jabiseo.api.member.dto.response.UpdateProfileImageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

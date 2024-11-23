@@ -1,8 +1,8 @@
 package com.jabiseo.api.plan.application.usecase;
 
-import com.jabiseo.api.plan.dto.calender.PlanCalenderSearchResponse;
-import com.jabiseo.api.plan.dto.calender.PlanProgressDateResponse;
-import com.jabiseo.api.plan.dto.calender.PlanProgressResponse;
+import com.jabiseo.api.plan.dto.response.calender.PlanCalenderSearchResponse;
+import com.jabiseo.api.plan.dto.response.calender.PlanProgressDateResponse;
+import com.jabiseo.api.plan.dto.response.calender.PlanProgressResponse;
 import com.jabiseo.domain.common.exception.BusinessException;
 import com.jabiseo.domain.common.exception.CommonErrorCode;
 import com.jabiseo.domain.plan.domain.*;

@@ -1,10 +1,11 @@
 package com.jabiseo.api.problem.controller;
 
 import com.jabiseo.api.problem.application.usecase.*;
-import com.jabiseo.api.problem.dto.*;
 import com.jabiseo.api.config.auth.AuthMember;
 import com.jabiseo.api.config.auth.AuthenticatedMember;
-import com.jabiseo.api.problem.application.usecase.*;
+import com.jabiseo.api.problem.dto.request.CreateReportRequest;
+import com.jabiseo.api.problem.dto.request.FindProblemsRequest;
+import com.jabiseo.api.problem.dto.response.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;

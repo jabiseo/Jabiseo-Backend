@@ -1,6 +1,6 @@
 package com.jabiseo.api.member.application.usecase;
 
-import com.jabiseo.api.member.dto.UpdateNicknameRequest;
+import com.jabiseo.api.member.dto.request.UpdateNicknameRequest;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;

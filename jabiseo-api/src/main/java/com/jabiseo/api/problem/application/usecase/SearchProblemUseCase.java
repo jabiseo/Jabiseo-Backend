@@ -1,6 +1,6 @@
 package com.jabiseo.api.problem.application.usecase;
 
-import com.jabiseo.api.problem.dto.SearchProblemResponse;
+import com.jabiseo.api.problem.dto.response.SearchProblemResponse;
 import com.jabiseo.domain.problem.service.ProblemService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;

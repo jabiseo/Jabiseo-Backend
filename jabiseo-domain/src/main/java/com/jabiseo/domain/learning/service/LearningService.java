@@ -2,7 +2,7 @@ package com.jabiseo.domain.learning.service;
 
 import com.jabiseo.domain.learning.domain.Learning;
 import com.jabiseo.domain.learning.domain.LearningMode;
-import com.jabiseo.domain.learning.domain.LearningRepository;
+import com.jabiseo.domain.learning.repository.LearningRepository;
 import com.jabiseo.domain.learning.domain.ProblemSolving;
 import com.jabiseo.domain.learning.dto.TodayLearningDto;
 import com.jabiseo.domain.member.domain.Member;

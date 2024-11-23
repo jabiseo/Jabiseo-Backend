@@ -1,6 +1,6 @@
 package com.jabiseo.api.member.dto;
 
-import com.jabiseo.api.member.dto.UpdateProfileImageRequest;
+import com.jabiseo.api.member.dto.request.UpdateProfileImageRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

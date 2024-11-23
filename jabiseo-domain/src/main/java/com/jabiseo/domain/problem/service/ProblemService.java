@@ -1,7 +1,7 @@
 package com.jabiseo.domain.problem.service;
 
 import com.jabiseo.domain.problem.domain.Problem;
-import com.jabiseo.domain.problem.domain.ProblemRepository;
+import com.jabiseo.domain.problem.repository.ProblemRepository;
 import com.jabiseo.domain.problem.dto.*;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;
 import com.jabiseo.domain.problem.exception.ProblemErrorCode;
