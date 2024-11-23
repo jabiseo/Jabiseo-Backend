@@ -2,6 +2,7 @@ package com.jabiseo.domain.auth.domain;
 
 import com.jabiseo.domain.auth.exception.AuthenticationBusinessException;
 import com.jabiseo.domain.auth.exception.AuthenticationErrorCode;
+import com.jabiseo.domain.auth.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
 package com.jabiseo.api.problem.application.usecase;
 
-import com.jabiseo.api.problem.dto.CreateBookmarkRequest;
+import com.jabiseo.api.problem.dto.request.CreateBookmarkRequest;
 import com.jabiseo.domain.problem.service.BookmarkService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

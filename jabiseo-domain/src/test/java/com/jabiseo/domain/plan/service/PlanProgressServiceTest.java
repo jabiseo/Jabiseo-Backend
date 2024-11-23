@@ -1,10 +1,11 @@
 package com.jabiseo.domain.plan.service;
 
 import com.jabiseo.domain.learning.domain.LearningMode;
-import com.jabiseo.domain.learning.domain.LearningRepository;
+import com.jabiseo.domain.learning.repository.LearningRepository;
 import com.jabiseo.domain.learning.dto.LearningWithSolvingCountQueryDto;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.plan.domain.*;
+import com.jabiseo.domain.plan.repository.PlanProgressRepository;
 import fixture.MemberFixture;
 import fixture.PlanFixture;
 import fixture.PlanItemFixture;
@@ -43,8 +44,6 @@ class PlanProgressServiceTest {
     private WeeklyDefineStrategy weeklyDefineStrategy;
 
     private Member member;
-
-    private WeekPeriod weekPeriod;
 
     @BeforeEach
     void setUp() {

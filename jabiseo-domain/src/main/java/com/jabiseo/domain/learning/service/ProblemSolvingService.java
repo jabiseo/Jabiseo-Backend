@@ -1,7 +1,7 @@
 package com.jabiseo.domain.learning.service;
 
 import com.jabiseo.domain.learning.domain.ProblemSolving;
-import com.jabiseo.domain.learning.domain.ProblemSolvingRepository;
+import com.jabiseo.domain.learning.repository.ProblemSolvingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -3,10 +3,12 @@ package com.jabiseo.domain.plan.service;
 
 import com.jabiseo.domain.learning.domain.Learning;
 import com.jabiseo.domain.learning.domain.LearningMode;
-import com.jabiseo.domain.learning.domain.LearningRepository;
+import com.jabiseo.domain.learning.repository.LearningRepository;
 import com.jabiseo.domain.learning.dto.LearningWithSolvingCountQueryDto;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.plan.domain.*;
+import com.jabiseo.domain.plan.repository.PlanProgressRepository;
+import com.jabiseo.domain.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

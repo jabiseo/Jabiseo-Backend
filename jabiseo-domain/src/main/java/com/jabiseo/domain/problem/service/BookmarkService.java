@@ -1,13 +1,13 @@
 package com.jabiseo.domain.problem.service;
 
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
+import com.jabiseo.domain.member.repository.MemberRepository;
 import com.jabiseo.domain.member.exception.MemberBusinessException;
 import com.jabiseo.domain.member.exception.MemberErrorCode;
 import com.jabiseo.domain.problem.domain.Bookmark;
-import com.jabiseo.domain.problem.domain.BookmarkRepository;
+import com.jabiseo.domain.problem.repository.BookmarkRepository;
 import com.jabiseo.domain.problem.domain.Problem;
-import com.jabiseo.domain.problem.domain.ProblemRepository;
+import com.jabiseo.domain.problem.repository.ProblemRepository;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;
 import com.jabiseo.domain.problem.exception.ProblemErrorCode;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.jabiseo.api.plan.application.usecase;
 
-import com.jabiseo.api.plan.dto.CreatePlanRequest;
+import com.jabiseo.api.plan.dto.request.CreatePlanRequest;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;
 import com.jabiseo.domain.plan.domain.Plan;

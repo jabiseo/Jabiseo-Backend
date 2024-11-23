@@ -2,7 +2,7 @@ package com.jabiseo.domain.member.service;
 
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.member.domain.MemberRepository;
+import com.jabiseo.domain.member.repository.MemberRepository;
 import com.jabiseo.domain.member.domain.OauthMemberInfo;
 import com.jabiseo.domain.member.exception.MemberBusinessException;
 import com.jabiseo.domain.member.exception.MemberErrorCode;

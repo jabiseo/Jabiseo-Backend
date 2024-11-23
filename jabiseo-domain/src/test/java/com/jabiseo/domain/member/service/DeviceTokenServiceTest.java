@@ -1,7 +1,7 @@
 package com.jabiseo.domain.member.service;
 
 import com.jabiseo.domain.member.domain.DeviceToken;
-import com.jabiseo.domain.member.domain.DeviceTokenRepository;
+import com.jabiseo.domain.member.repository.DeviceTokenRepository;
 import com.jabiseo.domain.member.domain.Member;
 import fixture.MemberFixture;
 import org.junit.jupiter.api.DisplayName;

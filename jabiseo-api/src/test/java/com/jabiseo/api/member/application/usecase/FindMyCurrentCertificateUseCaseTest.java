@@ -1,6 +1,6 @@
 package com.jabiseo.api.member.application.usecase;
 
-import com.jabiseo.api.member.dto.FindMyCurrentCertificateResponse;
+import com.jabiseo.api.member.dto.response.FindMyCurrentCertificateResponse;
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;

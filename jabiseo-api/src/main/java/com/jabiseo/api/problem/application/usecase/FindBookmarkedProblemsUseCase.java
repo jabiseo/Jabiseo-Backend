@@ -1,6 +1,6 @@
 package com.jabiseo.api.problem.application.usecase;
 
-import com.jabiseo.api.problem.dto.FindBookmarkedProblemsResponse;
+import com.jabiseo.api.problem.dto.response.FindBookmarkedProblemsResponse;
 import com.jabiseo.domain.certificate.service.CertificateService;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;

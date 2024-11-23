@@ -5,6 +5,7 @@ import com.jabiseo.domain.certificate.domain.Exam;
 import com.jabiseo.domain.certificate.domain.Subject;
 import com.jabiseo.domain.problem.dto.ProblemWithBookmarkDetailQueryDto;
 import com.jabiseo.domain.problem.dto.ProblemWithBookmarkSummaryScoreQueryDto;
+import com.jabiseo.domain.problem.repository.ProblemRepository;
 import com.jabiseo.domain.problem.service.ProblemSearchProvider;
 import com.jabiseo.domain.problem.service.ProblemService;
 import org.junit.jupiter.api.BeforeEach;
