@@ -8,6 +8,7 @@
 
     <!-- dev 환경에서는 logback-dev.xml 설정 사용 -->
     <springProfile name="dev">
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
         <include resource="logback-dev.xml"/>
     </springProfile>
 
