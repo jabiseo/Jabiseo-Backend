@@ -6,7 +6,7 @@ on:
 
 env:
   VERSION: ${{github.sha}}
-  ECR_URI: 381491925979.dkr.ecr.ap-northeast-2.amazonaws.com/jabiseo-be # docker ecr 주소
+  ECR_URI: 970547342025.dkr.ecr.ap-northeast-2.amazonaws.com/jabiseo-api # docker ecr 주소
   NAME: jabiseo-was # docker service name
 
 
@@ -189,4 +189,3 @@ jobs:
           COMMIT_MESSAGE: ${{env.COMMIT_MESSAGE}}
           AUTHOR: ${{env.AUTHOR}}
           DOCKER_IMAGE: ${{env.DOCKER_TAG}}
-
