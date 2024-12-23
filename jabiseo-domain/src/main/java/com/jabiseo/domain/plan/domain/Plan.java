@@ -163,4 +163,8 @@ public class Plan {
             throw new PlanBusinessException(PlanErrorCode.IS_NOT_OWNER);
         }
     }
+
+    public void addItems(List<PlanItem> addItems) {
+        this.planItems.addAll(addItems);
+    }
 }
