@@ -2,10 +2,6 @@ package com.jabiseo.domain.plan.domain;
 
 import com.jabiseo.domain.certificate.domain.Certificate;
 import com.jabiseo.domain.member.domain.Member;
-import com.jabiseo.domain.plan.domain.ActivityType;
-import com.jabiseo.domain.plan.domain.GoalType;
-import com.jabiseo.domain.plan.domain.Plan;
-import com.jabiseo.domain.plan.domain.PlanItem;
 import fixture.CertificateFixture;
 import fixture.MemberFixture;
 import fixture.PlanItemFixture;
@@ -13,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +35,7 @@ class PlanTest {
                 mockWeeklyItem(ActivityType.STUDY),
                 mockWeeklyItem(ActivityType.EXAM)
         );
-        plan = new Plan(certificate, member, null, new ArrayList<>(originalItems));
+        plan = new Plan(certificate, member, null, new PlanItemGroup(new ArrayList<>(originalItems)));
     }
 
     @Test
@@ -45,14 +43,14 @@ class PlanTest {
     void getNewItemsSuccess() {
         //given
         // Time 이 리턴되어야 한다. (1개)
-        List<PlanItem> newDailyItemsRequest = List.of(
+        List<PlanItem> newDailyItemsRequest = Arrays.asList(
                 mockDailyItem(ActivityType.STUDY), // exist item
                 mockDailyItem(ActivityType.EXAM), // exist item
                 mockDailyItem(ActivityType.TIME) // new item
         );
 
         // Problem이 리턴되어야 한다 (1개)
-        List<PlanItem> newWeeklyItemsRequest = List.of(
+        List<PlanItem> newWeeklyItemsRequest = Arrays.asList(
                 mockWeeklyItem(ActivityType.EXAM), // exist item
                 mockWeeklyItem(ActivityType.STUDY), // exist item
                 mockWeeklyItem(ActivityType.PROBLEM) // new item
@@ -120,7 +118,7 @@ class PlanTest {
 
         List<PlanItem> originalItems = List.of(new PlanItem(null, ActivityType.EXAM, GoalType.DAILY, 5));
 
-        plan = new Plan(certificate, member, null, originalItems);
+        plan = new Plan(certificate, member, null, new PlanItemGroup(originalItems));
 
         //when
         List<PlanItem> newItems = plan.getExistItems(newDailyItemsRequest, newWeeklyItemsRequest);
@@ -176,14 +174,11 @@ class PlanTest {
                 mockWeeklyItem(ActivityType.PROBLEM) // new item
         );
         // Problem이 삭제될 예정. (setUp)
-        int expectedSize = this.plan.getPlanItems().size() - 1 + 2;// -1(Problem), 2 => 위의 2개의 new items
-        List<PlanItem> existItems = plan.getExistItems(newDailyItemsRequest, newWeeklyItemsRequest);
-        List<PlanItem> newItems = plan.getNewItems(newDailyItemsRequest, newWeeklyItemsRequest);
-        List<PlanItem> deletedItems = plan.getDeletedItems(newDailyItemsRequest, newWeeklyItemsRequest);
+        int expectedSize = this.plan.getPlanItemGroup().getPlanItems().size() - 1 + 2;// -1(Problem), 2 => 위의 2개의 new items
 
         //when
-        plan.modifyPlanItems(existItems, newItems, deletedItems);
-        List<PlanItem> planItems = plan.getPlanItems();
+        plan.modify(newDailyItemsRequest, newWeeklyItemsRequest, LocalDate.now());
+        List<PlanItem> planItems = plan.getPlanItemGroup().getPlanItems();
 
         //then
         assertThat(planItems.size()).isEqualTo(expectedSize);

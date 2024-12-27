@@ -204,7 +204,7 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
 
 
     private void savePlanProgress(Plan plan) {
-        List<PlanItem> planItems = plan.getPlanItems();
+        List<PlanItem> planItems = plan.getPlanItemGroup().getPlanItems();
 
         List<PlanProgress> planProgresses = new ArrayList<>();
         for (PlanItem planItem : planItems) {

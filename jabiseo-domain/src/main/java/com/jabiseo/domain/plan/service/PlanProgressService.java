@@ -115,7 +115,7 @@ public class PlanProgressService {
     }
 
     private List<PlanProgress> getPlanProgress(Plan plan, LearningWithSolvingCountQueryDto dto) {
-        List<PlanItem> planItems = plan.getPlanItems();
+        List<PlanItem> planItems = plan.getPlanItemGroup().getPlanItems();
 
         List<PlanProgress> dailyProgress = getPlanProgressByPlanAndGoalType(plan, GoalType.DAILY);
         if (dailyProgress.isEmpty()) {

@@ -72,7 +72,7 @@ class ModifyPlanUseCaseIntegrationTest {
         modifyPlanUseCase.execute(1L, 1L, request);
 
         //then
-        List<PlanItem> savedPlanItems = planRepository.findPlanWithItemsById(1L).get().getPlanItems();
+        List<PlanItem> savedPlanItems = planRepository.findPlanWithItemsById(1L).get().getPlanItemGroup().getPlanItems();
 
         Optional<PlanItem> result = savedPlanItems.stream().filter(item ->
                         Objects.equals(item.getActivityType(), ActivityType.PROBLEM) &&
@@ -96,7 +96,7 @@ class ModifyPlanUseCaseIntegrationTest {
         modifyPlanUseCase.execute(1L, 1L, request);
 
         //then
-        List<PlanItem> savedPlanItems = planRepository.findPlanWithItemsById(1L).get().getPlanItems();
+        List<PlanItem> savedPlanItems = planRepository.findPlanWithItemsById(1L).get().getPlanItemGroup().getPlanItems();
         Optional<PlanItem> result = savedPlanItems.stream().filter(item ->
                         Objects.equals(item.getActivityType(), removedItemType) &&
                                 Objects.equals(item.getGoalType(), GoalType.DAILY))
@@ -121,7 +121,7 @@ class ModifyPlanUseCaseIntegrationTest {
         modifyPlanUseCase.execute(1L, 1L, request);
 
         //then
-        List<PlanItem> savedPlanItems = planRepository.findPlanWithItemsById(1L).get().getPlanItems();
+        List<PlanItem> savedPlanItems = planRepository.findPlanWithItemsById(1L).get().getPlanItemGroup().getPlanItems();
         Optional<PlanItem> result = savedPlanItems.stream().filter(item ->
                         Objects.equals(item.getActivityType(), ActivityType.valueOf(existPlanItems.get(0).activityType())) &&
                                 Objects.equals(item.getGoalType(), GoalType.DAILY))

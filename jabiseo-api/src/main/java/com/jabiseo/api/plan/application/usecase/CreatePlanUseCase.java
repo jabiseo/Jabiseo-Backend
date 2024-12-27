@@ -5,6 +5,7 @@ import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;
 import com.jabiseo.domain.plan.domain.Plan;
 import com.jabiseo.domain.plan.domain.PlanItem;
+import com.jabiseo.domain.plan.domain.PlanItemGroup;
 import com.jabiseo.domain.plan.service.PlanProgressService;
 import com.jabiseo.domain.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,11 @@ public class CreatePlanUseCase {
         planService.checkInProgressPlan(member);
 
         Plan plan = Plan.create(member, request.endAt());
-        List<PlanItem> planItems = request.toPlanItems(plan);
+        PlanItemGroup planItemGroup = new PlanItemGroup(request.toPlanItems(plan));
+        plan.updatePlanItemGroup(planItemGroup);
 
-        Plan savedPlan = planService.savePlanAndItems(plan, planItems);
-        planProgressService.createCurrentPlanProgress(member, planItems);
+        Plan savedPlan = planService.savePlan(plan);
+        planProgressService.createCurrentPlanProgress(member, planItemGroup.getPlanItems());
         return savedPlan.getId();
     }
 

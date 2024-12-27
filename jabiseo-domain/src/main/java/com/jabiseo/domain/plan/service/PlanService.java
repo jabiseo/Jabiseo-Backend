@@ -43,13 +43,6 @@ public class PlanService {
         return planRepository.save(plan);
     }
 
-    @Transactional
-    public Plan savePlanAndItems(Plan plan, List<PlanItem> planItems) {
-        Plan saved = planRepository.save(plan);
-        planItemRepository.saveAll(planItems);
-        return saved;
-    }
-
     public void checkInProgressPlan(Member member) {
         if (planRepository.existsByCertificateAndMember(member.getCurrentCertificate(), member)) {
             throw new PlanBusinessException(PlanErrorCode.ALREADY_EXIST_PLAN);
