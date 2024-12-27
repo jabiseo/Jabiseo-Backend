@@ -3,12 +3,9 @@ package com.jabiseo.api.plan.application.usecase;
 
 import com.jabiseo.api.plan.dto.request.ModifyPlanRequest;
 import com.jabiseo.api.plan.dto.request.PlanItemRequest;
-import com.jabiseo.domain.certificate.domain.Certificate;
-import com.jabiseo.domain.certificate.repository.CertificateRepository;
 import com.jabiseo.domain.learning.domain.Learning;
 import com.jabiseo.domain.learning.domain.LearningMode;
 import com.jabiseo.domain.learning.domain.ProblemSolving;
-import com.jabiseo.domain.learning.dto.LearningWithSolvingCountQueryDto;
 import com.jabiseo.domain.learning.repository.LearningRepository;
 import com.jabiseo.domain.learning.repository.ProblemSolvingRepository;
 import com.jabiseo.domain.member.domain.Member;
@@ -17,25 +14,31 @@ import com.jabiseo.domain.plan.domain.*;
 import com.jabiseo.domain.plan.repository.PlanProgressRepository;
 import com.jabiseo.domain.plan.repository.PlanRepository;
 import com.jabiseo.domain.problem.domain.Problem;
-import fixture.MemberFixture;
 import fixture.ProblemFixture;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
-@DisplayName("modify plan usecase 통합 테스트")
-@Transactional
+@DisplayName("modify plan usecase, Update Progress 통합 테스트")
 @SpringBootTest
+@SqlGroup({
+        @Sql(value = "/sql/modify-plan-usecase-test-data.sql", executionPhase = BEFORE_TEST_METHOD),
+        @Sql(value = "/sql/delete-all-data.sql", executionPhase = AFTER_TEST_METHOD)
+})
 @ActiveProfiles("test")
 public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
 
@@ -43,14 +46,6 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
     private ModifyPlanUseCase modifyPlanUseCase;
     private WeeklyDefineStrategy sundayStartWeeklyStrategy = new SundayStartWeeklyStrategy();
 
-    @Autowired
-    private CertificateRepository certificateRepository;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private PlanRepository planRepository;
 
     @Autowired
     private LearningRepository learningRepository;
@@ -58,46 +53,65 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
     @Autowired
     private ProblemSolvingRepository problemSolvingRepository;
 
-    private Member testMember;
-    private Plan testPlan;
-    private List<PlanItem> testPlanItems;
-    private Learning testLearning;
-    private List<PlanItemRequest> requestMock; // exist Item List
     @Autowired
     private PlanProgressRepository planProgressRepository;
 
+    @Autowired
+    private PlanRepository planRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+
+    List<PlanItemRequest> existPlanItems = new ArrayList<>();
+    Plan testPlan;
+    Member testMember;
+
     @BeforeEach
     public void setup() {
-        testMember = saveMember();
-        testPlan = savePlan(testMember);
-        testPlanItems = testPlan.getPlanItems();
-        requestMock = new ArrayList<>();
-        requestMock.addAll(testPlanItems.stream().map((current) -> {
-            return new PlanItemRequest(10, current.getActivityType().name()); // 기존에 있는 값 로드
-        }).toList());
+        // 시간과 관련된 Learning, plan Progress는 코드로 생성
+        PlanItemRequest request1 = PlanItemRequest.builder()
+                .targetValue(100)
+                .activityType("EXAM")
+                .build();
+        PlanItemRequest request2 = PlanItemRequest.builder()
+                .targetValue(100)
+                .activityType("STUDY")
+                .build();
+        PlanItemRequest request3 = PlanItemRequest.builder()
+                .targetValue(100)
+                .activityType("TIME")
+                .build();
+        existPlanItems.addAll(List.of(request1, request2, request3));
+        testPlan = planRepository.findPlanWithItemsById(1L).orElse(null);
+        testMember = memberRepository.findById(1L).orElse(null);
+        savePlanProgress(testPlan); // given Plan Progress
 
+    }
 
-        // plan Progress 생성
-        savePlanProgress(testPlan);
+    @AfterEach
+    public void tearDown() {
+        planProgressRepository.deleteAll();
+        learningRepository.deleteAll();
     }
 
     @Test
-    @DisplayName("modifyPlanUseCase 실행 시 이미 존재하는 PlanItem 에 대해 PlanProgress 값이 있다면 수정한다. (daily) ")
+    @DisplayName("이미 존재하는 PlanItem 에 대해 PlanProgress 값이 있다면 수정한다. (daily) ")
     void existsPlanProgressCompletedValueUpdate() {
         //given
-
-        List<PlanItemRequest> addTenCompletedValueRequest = requestMock.stream().map((req) -> new PlanItemRequest(req.targetValue() + 10, req.activityType())).toList();
+        List<PlanItemRequest> addTenCompletedValueRequest = existPlanItems.stream().map((req) -> new PlanItemRequest(req.targetValue() + 10, req.activityType())).toList();
         ModifyPlanRequest request = new ModifyPlanRequest(LocalDate.now(), addTenCompletedValueRequest, Collections.emptyList());
 
+
         //when
-        modifyPlanUseCase.execute(testPlan.getId(), testMember.getId(), request);
+        modifyPlanUseCase.execute(1L, 1L, request);
 
         //then
-        List<PlanProgress> currentResult = planProgressRepository.findAllByPlanAndProgressDateBetweenAndGoalType(testPlan, LocalDate.now(), LocalDate.now(), GoalType.DAILY);
+        List<PlanProgress> result = planProgressRepository.findAllByPlanAndProgressDateBetweenAndGoalType(testPlan, LocalDate.now(), LocalDate.now(), GoalType.DAILY);
         Map<ActivityType, Integer> requestMapTypeToCompletedValue = addTenCompletedValueRequest.stream()
                 .collect(Collectors.toMap((req) -> ActivityType.valueOf(req.activityType()), PlanItemRequest::targetValue));
 
-        assertThat(currentResult)
+        assertThat(result)
                 .hasSize(requestMapTypeToCompletedValue.size())
                 .allSatisfy(progress -> {
                     Integer targeted = requestMapTypeToCompletedValue.get(progress.getActivityType());
@@ -107,15 +121,15 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
     }
 
     @Test
-    @DisplayName("modifyPlanUseCase 실행 시 Item을 삭제하면 관련 Plan Progress도 삭제한다. (daily) ")
+    @DisplayName(" Item을 삭제하면 관련 Plan Progress 도 삭제한다. (daily) ")
     void removePlanProgressByItems() {
         //given
-        PlanItemRequest remove = requestMock.remove(0);
+        PlanItemRequest remove = existPlanItems.remove(0);
         ActivityType targetType = ActivityType.valueOf(remove.activityType());
-        ModifyPlanRequest request = new ModifyPlanRequest(LocalDate.now(), requestMock, Collections.emptyList());
+        ModifyPlanRequest request = new ModifyPlanRequest(LocalDate.now(), existPlanItems, Collections.emptyList());
 
         //when
-        modifyPlanUseCase.execute(testPlan.getId(), testMember.getId(), request);
+        modifyPlanUseCase.execute(1L, 1L, request);
 
         //then
         List<PlanProgress> currentResult = planProgressRepository.findAllByPlanAndProgressDateBetweenAndGoalType(testPlan, LocalDate.now(), LocalDate.now(), GoalType.DAILY);
@@ -124,20 +138,21 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
                 .isEmpty();
     }
 
+
     @Test
-    @DisplayName("modifyPlanUseCase 실행 시 새로운 Item이면 관련 PlanProgress를 생성하고 Learning 값에 맞게 반영항다.")
+    @DisplayName("새로운 Item이 추가되면 관련 PlanProgress 를 생성하고 Learning 값에 맞게 반영항다.")
     void addItemCreateProgressAndUpdateByLearningHistory() {
         //given
-        requestMock.add(new PlanItemRequest(1000, ActivityType.TIME.name()));
+        existPlanItems.add(new PlanItemRequest(1000, ActivityType.PROBLEM.name()));
         Learning learning = saveLearning(testMember, LearningMode.EXAM, 1);
         Learning learning_2 = saveLearning(testMember, LearningMode.EXAM, 1);
-        long expectedCurrentLearningTime = learning.getLearningTime() + learning_2.getLearningTime();
+        long expectedValue = learning.getProblemSolvings().size() + learning_2.getProblemSolvings().size();
 
-        ModifyPlanRequest request = new ModifyPlanRequest(LocalDate.now(), requestMock, Collections.emptyList());
+        ModifyPlanRequest request = new ModifyPlanRequest(LocalDate.now(), existPlanItems, Collections.emptyList());
 
 
         //when
-        modifyPlanUseCase.execute(testPlan.getId(), testMember.getId(), request);
+        modifyPlanUseCase.execute(1L, 1L, request);
 
 
         //then
@@ -145,14 +160,14 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
 
 
         assertThat(currentResult)
-                .filteredOn(progress -> progress.getActivityType().equals(ActivityType.TIME))
+                .filteredOn(progress -> progress.getActivityType().equals(ActivityType.PROBLEM))
                 .isNotEmpty()
                 .extracting(PlanProgress::getCompletedValue)
-                .containsExactly(expectedCurrentLearningTime);
+                .containsExactly(expectedValue);
     }
 
     @Test
-    @DisplayName("modifyPlanUseCase 실행 시 새로운 Item 이면 관련 PlanProgress 를 생성하고 Learning 값에 맞게 반영한다 . (weekly) ")
+    @DisplayName("새로운 Item 이면 관련 PlanProgress 를 생성하고 Learning 값에 맞게 반영한다 . (weekly) ")
     void addItemCreateProgressAndUpdateByLearningHistoryPerActivityType() {
         //given
         List<PlanItemRequest> weeklyItem = new ArrayList<>();
@@ -163,14 +178,15 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
         Learning learning1 = saveLearning(testMember, LearningMode.EXAM, 2);
         Learning learning2 = saveLearning(testMember, LearningMode.EXAM, 2);
         Learning learning3 = saveLearning(testMember, LearningMode.STUDY, 2);
+
         Map<ActivityType, Long> expectedCompletedValue = new HashMap<>();
-        expectedCompletedValue.put(ActivityType.PROBLEM, 6L);
+        expectedCompletedValue.put(ActivityType.PROBLEM, (long) (learning1.getProblemSolvings().size() + learning2.getProblemSolvings().size() + learning3.getProblemSolvings().size()));
         expectedCompletedValue.put(ActivityType.TIME, (learning1.getLearningTime() + learning2.getLearningTime() + learning3.getLearningTime()));
         expectedCompletedValue.put(ActivityType.STUDY, 1L);
         expectedCompletedValue.put(ActivityType.EXAM, 2L);
 
 
-        ModifyPlanRequest request = new ModifyPlanRequest(LocalDate.now(), requestMock, weeklyItem);
+        ModifyPlanRequest request = new ModifyPlanRequest(LocalDate.now(), existPlanItems, weeklyItem);
 
         //when
         modifyPlanUseCase.execute(testPlan.getId(), testMember.getId(), request);
@@ -178,9 +194,6 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
         //then
         WeekPeriod weekPeriod = sundayStartWeeklyStrategy.getWeekPeriod(LocalDate.now());
         List<PlanProgress> currentResult = planProgressRepository.findAllByPlanAndProgressDateBetweenAndGoalType(testPlan, weekPeriod.getStart(), weekPeriod.getEnd(), GoalType.WEEKLY);
-
-
-        List<LearningWithSolvingCountQueryDto> learningWithSolvingCount = learningRepository.findLearningWithSolvingCount(testMember, testMember.getCurrentCertificate(), weekPeriod.getStart(), weekPeriod.getEnd());
 
         assertThat(currentResult.size()).isEqualTo(weeklyItem.size());
         assertThat(currentResult)
@@ -208,25 +221,9 @@ public class ModifyPlanUseCaseUpdateProgressIntegrationTest {
         for (int i = 0; i < problemSolvingCount; i++) {
             problemSolvings.add(ProblemSolving.of(member, problem, learning, 1, true));
         }
-
+        learning = learningRepository.save(learning);
         problemSolvingRepository.saveAll(problemSolvings);
-        return learningRepository.save(learning);
+        return learning;
     }
 
-    private Member saveMember() {
-        Certificate saved = certificateRepository.save(Certificate.of("정보처리기사"));
-        Member member = MemberFixture.createMember();
-        member.updateCurrentCertificate(saved);
-        return memberRepository.save(member);
-    }
-
-    private Plan savePlan(Member member) {
-        List<PlanItem> planItems = new ArrayList<>();
-        Plan plan = new Plan(member.getCurrentCertificate(), member, LocalDate.now());
-        planItems.add(new PlanItem(plan, ActivityType.EXAM, GoalType.DAILY, 10));
-        planItems.add(new PlanItem(plan, ActivityType.STUDY, GoalType.DAILY, 10));
-        planItems.add(new PlanItem(plan, ActivityType.PROBLEM, GoalType.DAILY, 10));
-        plan.addItems(planItems);
-        return planRepository.save(plan);
-    }
 }
