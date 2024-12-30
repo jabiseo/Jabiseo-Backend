@@ -62,7 +62,7 @@ public class PlanItem {
     }
 
     // 비지니스 요구사항으로 같은 객체인지 판단
-    public boolean equalsItems(PlanItem other) {
+    public boolean equalsItem(PlanItem other) {
         if (other == null) return false;
         return this.activityType.equals(other.getActivityType()) && this.goalType.equals(other.getGoalType());
     }

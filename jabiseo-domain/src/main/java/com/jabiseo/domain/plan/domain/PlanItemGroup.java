@@ -30,7 +30,7 @@ public class PlanItemGroup {
         List<PlanItem> deletedItems = getDeletedItems(items);
 
         // 삭제될 아이템 삭제
-        planItems.removeIf(planItem -> deletedItems.stream().anyMatch((item) -> item.equalsItems(planItem)));
+        planItems.removeIf(planItem -> deletedItems.stream().anyMatch((item) -> item.equalsItem(planItem)));
 
         // 이미 존재하는 items의 target value 수정 N*M
         planItems.forEach((planItem -> planItem.updateTargetValue(findTargetValue(existItems, planItem))));
@@ -46,25 +46,25 @@ public class PlanItemGroup {
 
     public List<PlanItem> getNewItems(List<PlanItem> inputItems) {
         return inputItems.stream()// 새로 들어온 아이템들 중
-                .filter(item -> planItems.stream().noneMatch((currentItem) -> currentItem.equalsItems(item))) // 이미 있는 아이템과 매칭되지 않는 것
+                .filter(item -> planItems.stream().noneMatch((currentItem) -> currentItem.equalsItem(item))) // 이미 있는 아이템과 매칭되지 않는 것
                 .toList();
     }
 
     public List<PlanItem> getExistItems(List<PlanItem> inputItems) {
         return inputItems.stream()// 새로 들어온 아이템들 중
-                .filter(item -> planItems.stream().anyMatch((currentItem) -> currentItem.equalsItems(item))) // 이미 있는 아이템과 매칭되는것
+                .filter(item -> planItems.stream().anyMatch((currentItem) -> currentItem.equalsItem(item))) // 이미 있는 아이템과 매칭되는것
                 .toList();
     }
 
     public List<PlanItem> getDeletedItems(List<PlanItem> inputItems) {
         return this.planItems.stream() // 기존 아이템들 중
-                .filter(item -> inputItems.stream().noneMatch((inputItem) -> inputItem.equalsItems(item))) // 새로 들어온 아이템과 매칭되지 않는 것.
+                .filter(item -> inputItems.stream().noneMatch((inputItem) -> inputItem.equalsItem(item))) // 새로 들어온 아이템과 매칭되지 않는 것.
                 .toList();
     }
 
     private int findTargetValue(List<PlanItem> source, PlanItem target) {
         PlanItem find = source.stream()
-                .filter((item) -> item.equalsItems(target))
+                .filter((item) -> item.equalsItem(target))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("Target value not found"));
         return find.getTargetValue();
