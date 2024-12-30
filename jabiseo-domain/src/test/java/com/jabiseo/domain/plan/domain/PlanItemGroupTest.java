@@ -1,41 +1,29 @@
 package com.jabiseo.domain.plan.domain;
 
-import com.jabiseo.domain.certificate.domain.Certificate;
-import com.jabiseo.domain.member.domain.Member;
-import fixture.CertificateFixture;
-import fixture.MemberFixture;
 import fixture.PlanItemFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("플랜 Entity 테스트")
-class PlanTest {
+class PlanItemGroupTest {
 
-    Plan plan;
-    Certificate certificate; // setUp시 고정
-    Member member; // setUp시 고정
+    List<PlanItem> existingItems;
 
     @BeforeEach
     void setUp() throws Exception {
-        certificate = CertificateFixture.createCertificate();
-        member = MemberFixture.createMember();
-
-        List<PlanItem> originalItems = List.of(
+        existingItems = List.of(
                 mockDailyItem(ActivityType.STUDY),
                 mockDailyItem(ActivityType.EXAM),
                 mockDailyItem(ActivityType.PROBLEM),
                 mockWeeklyItem(ActivityType.STUDY),
                 mockWeeklyItem(ActivityType.EXAM)
         );
-        plan = new Plan(certificate, member, null, new PlanItemGroup(new ArrayList<>(originalItems)));
     }
 
     @Test
@@ -52,8 +40,10 @@ class PlanTest {
                 mockWeeklyItem(ActivityType.PROBLEM) // new item
         );
 
+        PlanItemGroup group = new PlanItemGroup(existingItems);
+
         //when
-        List<PlanItem> newItems = plan.getNewItems(itemsRequest);
+        List<PlanItem> newItems = group.getNewItems(itemsRequest);
 
         //then
         assertThat(newItems.size()).isEqualTo(2);
@@ -79,8 +69,10 @@ class PlanTest {
                 mockWeeklyItem(ActivityType.STUDY), // exist item
                 mockWeeklyItem(ActivityType.PROBLEM) // new item
         );
+
+        PlanItemGroup group = new PlanItemGroup(existingItems);
         //when
-        List<PlanItem> newItems = plan.getExistItems(itemsRequest);
+        List<PlanItem> newItems = group.getExistItems(itemsRequest);
 
         //then
         assertThat(newItems.size()).isEqualTo(4);
@@ -112,10 +104,10 @@ class PlanTest {
 
         List<PlanItem> originalItems = List.of(new PlanItem(null, ActivityType.EXAM, GoalType.DAILY, 5));
 
-        plan = new Plan(certificate, member, null, new PlanItemGroup(originalItems));
+        PlanItemGroup group = new PlanItemGroup(existingItems);
 
         //when
-        List<PlanItem> newItems = plan.getExistItems(itemsRequest);
+        List<PlanItem> newItems = group.getExistItems(itemsRequest);
 
         //then
         assertThat(newItems.size()).isEqualTo(1);
@@ -138,10 +130,10 @@ class PlanTest {
                 mockWeeklyItem(ActivityType.STUDY), // exist item
                 mockWeeklyItem(ActivityType.PROBLEM) // new item
         );
-        // Problem이 삭제될 예정. (setUp)
+        PlanItemGroup group = new PlanItemGroup(existingItems);
 
         //when
-        List<PlanItem> result = plan.getDeletedItems(itemsRequest);
+        List<PlanItem> result = group.getDeletedItems(itemsRequest);
 
         //then
         assertThat(result.size()).isEqualTo(1);
@@ -164,10 +156,11 @@ class PlanTest {
                 mockWeeklyItem(ActivityType.PROBLEM) // new item
         );
 
+        PlanItemGroup group = new PlanItemGroup(existingItems);
 
         //when
-        plan.modify(itemsRequest, LocalDate.now());
-        List<PlanItem> planItems = plan.getPlanItemGroup().getPlanItems();
+        group.modifyPlanItems(itemsRequest);
+        List<PlanItem> planItems = group.getPlanItems();
 
         //then
         assertThat(planItems.size()).isEqualTo(6);

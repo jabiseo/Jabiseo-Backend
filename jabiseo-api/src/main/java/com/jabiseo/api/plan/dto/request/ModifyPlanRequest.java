@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public record ModifyPlanRequest(
@@ -32,5 +33,11 @@ public record ModifyPlanRequest(
         return weeklyPlan.stream()
                 .map((item) -> new PlanItem(plan, ActivityType.valueOf(item.activityType()), GoalType.WEEKLY, item.targetValue()))
                 .toList();
+    }
+
+    public List<PlanItem> toPlanItems(Plan plan) {
+        List<PlanItem> planItems = new ArrayList<>(getDailyPlanItems(plan));
+        planItems.addAll(getWeeklyPlanItems(plan));
+        return planItems;
     }
 }

@@ -15,10 +15,10 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     Optional<Plan> findFirstByCertificateAndMember(Certificate certificate, Member member);
 
-    @Query("SELECT p FROM Plan p JOIN FETCH p.planItemGroup JOIN FETCH p.certificate WHERE p.certificate = :certificate AND p.member = :member")
+    @Query("SELECT p FROM Plan p JOIN FETCH p.planItemGroup.planItems JOIN FETCH p.certificate WHERE p.certificate = :certificate AND p.member = :member")
     Optional<Plan> findFirstByCertificateAndMemberWithPlanItems(Certificate certificate, Member member);
 
-    @Query("SELECT p FROM Plan p JOIN FETCH p.planItemGroup WHERE p.id = :planId")
+    @Query("SELECT p FROM Plan p JOIN FETCH p.planItemGroup.planItems WHERE p.id = :planId")
     Optional<Plan> findPlanWithItemsById(@Param("planId") Long planId);
 
     @Query("SELECT p FROM Plan p JOIN FETCH p.member WHERE p.id = :planId")

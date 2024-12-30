@@ -9,8 +9,6 @@ import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class PlanItemGroup {
@@ -20,19 +18,19 @@ public class PlanItemGroup {
     private List<PlanItem> planItems = new ArrayList<>();
 
     public PlanItemGroup(List<PlanItem> planItems) {
-        this.planItems = planItems;
+        this.planItems = new ArrayList<>(planItems);
     }
 
     public PlanItemGroup() {
     }
 
-    public void modifyPlanItems(List<PlanItem> daily, List<PlanItem> weekly) {
-        List<PlanItem> newItems = getNewItems(daily, weekly);
-        List<PlanItem> existItems = getExistItems(daily, weekly);
-        List<PlanItem> deletedItems = getDeletedItems(daily, weekly);
+    public void modifyPlanItems(List<PlanItem> items) {
+        List<PlanItem> newItems = getNewItems(items);
+        List<PlanItem> existItems = getExistItems(items);
+        List<PlanItem> deletedItems = getDeletedItems(items);
 
         // 삭제될 아이템 삭제
-        planItems.removeAll(deletedItems);
+        planItems.removeIf(planItem -> deletedItems.stream().anyMatch((item) -> item.equalsItems(planItem)));
 
         // 이미 존재하는 items의 target value 수정 N*M
         planItems.forEach((planItem -> planItem.updateTargetValue(findTargetValue(existItems, planItem))));
@@ -41,62 +39,36 @@ public class PlanItemGroup {
         planItems.addAll(newItems);
     }
 
+
     public List<PlanItem> getPlanItems() {
         return planItems;
     }
 
+    public List<PlanItem> getNewItems(List<PlanItem> inputItems) {
+        return inputItems.stream()// 새로 들어온 아이템들 중
+                .filter(item -> planItems.stream().noneMatch((currentItem) -> currentItem.equalsItems(item))) // 이미 있는 아이템과 매칭되지 않는 것
+                .toList();
+    }
+
+    public List<PlanItem> getExistItems(List<PlanItem> inputItems) {
+        return inputItems.stream()// 새로 들어온 아이템들 중
+                .filter(item -> planItems.stream().anyMatch((currentItem) -> currentItem.equalsItems(item))) // 이미 있는 아이템과 매칭되는것
+                .toList();
+    }
+
+    public List<PlanItem> getDeletedItems(List<PlanItem> inputItems) {
+        return this.planItems.stream() // 기존 아이템들 중
+                .filter(item -> inputItems.stream().noneMatch((inputItem) -> inputItem.equalsItems(item))) // 새로 들어온 아이템과 매칭되지 않는 것.
+                .toList();
+    }
+
     private int findTargetValue(List<PlanItem> source, PlanItem target) {
         PlanItem find = source.stream()
-                .filter((item) -> item.getGoalType().equals(target.getGoalType()) && item.getActivityType().equals(target.getActivityType()))
+                .filter((item) -> item.equalsItems(target))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("Target value not found"));
         return find.getTargetValue();
     }
 
-    public List<PlanItem> getNewItems(List<PlanItem> daily, List<PlanItem> weekly) {
-        List<PlanItem> dailyNewItems = new ArrayList<>(getNewByGoalType(daily, GoalType.DAILY));
-        dailyNewItems.addAll(getNewByGoalType(weekly, GoalType.WEEKLY));
-        return dailyNewItems;
-    }
 
-    public List<PlanItem> getExistItems(List<PlanItem> daily, List<PlanItem> weekly) {
-        List<PlanItem> dailyExistItems = new ArrayList<>(getExistByGoalType(daily, GoalType.DAILY));
-        dailyExistItems.addAll(getExistByGoalType(weekly, GoalType.WEEKLY));
-        return dailyExistItems;
-    }
-
-    public List<PlanItem> getDeletedItems(List<PlanItem> daily, List<PlanItem> weekly) {
-        List<PlanItem> dailyDeletedItems = new ArrayList<>(getDeletedByGoalType(daily, GoalType.DAILY));
-        dailyDeletedItems.addAll(getDeletedByGoalType(weekly, GoalType.WEEKLY));
-        return dailyDeletedItems;
-    }
-
-    private List<PlanItem> getDeletedByGoalType(List<PlanItem> newItems, GoalType goalType) {
-        Set<ActivityType> newActivities = extractActivityTypes(newItems, goalType);
-        return this.planItems.stream()
-                .filter((item) -> item.getGoalType().equals(goalType))
-                .filter((item) -> !newActivities.contains(item.getActivityType()))
-                .toList();
-    }
-
-    private List<PlanItem> getExistByGoalType(List<PlanItem> newItems, GoalType goalType) {
-        Set<ActivityType> existActivities = extractActivityTypes(planItems, goalType);
-        return newItems.stream()
-                .filter(item -> existActivities.contains(item.getActivityType()))
-                .toList();
-    }
-
-    private List<PlanItem> getNewByGoalType(List<PlanItem> newItems, GoalType goalType) {
-        Set<ActivityType> existActivities = extractActivityTypes(planItems, goalType);
-        return newItems.stream()
-                .filter(item -> !existActivities.contains(item.getActivityType()))
-                .toList();
-    }
-
-    private Set<ActivityType> extractActivityTypes(List<PlanItem> source, GoalType goalType) {
-        return source.stream()
-                .filter(item -> item.getGoalType().equals(goalType))
-                .map(PlanItem::getActivityType)
-                .collect(Collectors.toSet());
-    }
 }

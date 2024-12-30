@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -58,6 +59,25 @@ public class PlanItem {
 
     public void updateTargetValue(Integer targetValue) {
         this.targetValue = targetValue;
+    }
+
+    // 비지니스 요구사항으로 같은 객체인지 판단
+    public boolean equalsItems(PlanItem other) {
+        if (other == null) return false;
+        return this.activityType.equals(other.getActivityType()) && this.goalType.equals(other.getGoalType());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlanItem planItem = (PlanItem) o;
+        return Objects.equals(id, planItem.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
 }

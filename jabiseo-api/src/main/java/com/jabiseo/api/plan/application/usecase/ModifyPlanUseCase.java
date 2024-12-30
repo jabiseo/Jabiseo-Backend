@@ -27,20 +27,18 @@ public class ModifyPlanUseCase {
         plan.checkOwner(memberId);
 
 
-        List<PlanItem> requestDailyPlanItems = request.getDailyPlanItems(plan);
-        List<PlanItem> requestWeeklyPlanItems = request.getWeeklyPlanItems(plan);
+        List<PlanItem> requestPlanItems = request.toPlanItems(plan);
 
-        plan.modify(requestDailyPlanItems, requestWeeklyPlanItems, request.endAt());
-
-        List<PlanItem> newItems = plan.getNewItems(requestDailyPlanItems, requestWeeklyPlanItems);
+        List<PlanItem> newItems = plan.getNewItems(requestPlanItems);
         planProgressService.createCurrentPlanProgress(member, newItems);
 
-        List<PlanItem> existItems = plan.getExistItems(requestDailyPlanItems, requestWeeklyPlanItems);
+        List<PlanItem> existItems = plan.getExistItems(requestPlanItems);
         planProgressService.modifyCurrentPlanProgress(plan, filterGoalType(existItems, GoalType.DAILY), filterGoalType(existItems, GoalType.WEEKLY));
 
-        List<PlanItem> deletedItems = plan.getDeletedItems(requestDailyPlanItems, requestWeeklyPlanItems);
+        List<PlanItem> deletedItems = plan.getDeletedItems(requestPlanItems);
         planProgressService.removeCurrentPlanProgress(plan, filterGoalType(deletedItems, GoalType.DAILY), filterGoalType(deletedItems, GoalType.WEEKLY));
 
+        plan.modify(requestPlanItems, request.endAt());
 
         planService.savePlan(plan);
     }

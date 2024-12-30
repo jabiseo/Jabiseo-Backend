@@ -2,9 +2,7 @@ package com.jabiseo.api.plan.application.usecase;
 
 import com.jabiseo.api.plan.dto.request.ModifyPlanRequest;
 import com.jabiseo.api.plan.dto.request.PlanItemRequest;
-import com.jabiseo.domain.plan.domain.ActivityType;
-import com.jabiseo.domain.plan.domain.GoalType;
-import com.jabiseo.domain.plan.domain.PlanItem;
+import com.jabiseo.domain.plan.domain.*;
 import com.jabiseo.domain.plan.repository.PlanRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

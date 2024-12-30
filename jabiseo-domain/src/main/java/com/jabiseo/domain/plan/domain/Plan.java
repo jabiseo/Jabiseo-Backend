@@ -65,24 +65,24 @@ public class Plan {
         return new Plan(member.getCurrentCertificate(), member, endAt);
     }
 
-    public List<PlanItem> getNewItems(List<PlanItem> daily, List<PlanItem> weekly) {
-        return planItemGroup.getNewItems(daily, weekly);
+    public List<PlanItem> getNewItems(List<PlanItem> items) {
+        return planItemGroup.getNewItems(items);
     }
 
-    public List<PlanItem> getExistItems(List<PlanItem> daily, List<PlanItem> weekly) {
-        return planItemGroup.getExistItems(daily, weekly);
+    public List<PlanItem> getExistItems(List<PlanItem> items) {
+        return planItemGroup.getExistItems(items);
     }
 
-    public List<PlanItem> getDeletedItems(List<PlanItem> daily, List<PlanItem> weekly) {
-        return planItemGroup.getDeletedItems(daily, weekly);
+    public List<PlanItem> getDeletedItems(List<PlanItem> items) {
+        return planItemGroup.getDeletedItems(items);
     }
 
 
-    public void modify(List<PlanItem> daily, List<PlanItem> weekly, LocalDate endAt) {
+    public void modify(List<PlanItem> items, LocalDate endAt) {
         if(!endAt.equals(this.endAt)){
             this.endAt = endAt;
 
-        planItemGroup.modifyPlanItems(daily, weekly);}
+        planItemGroup.modifyPlanItems(items);}
     }
 
 
