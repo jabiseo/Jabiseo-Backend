@@ -23,13 +23,13 @@ public record ModifyPlanRequest(
         List<PlanItemRequest> weeklyPlan
 ) {
 
-    public List<PlanItem> getDailyPlanItems(Plan plan) {
+    private List<PlanItem> getDailyPlanItems(Plan plan) {
         return dailyPlan.stream()
                 .map((item) -> new PlanItem(plan, ActivityType.valueOf(item.activityType()), GoalType.DAILY, item.targetValue()))
                 .toList();
     }
 
-    public List<PlanItem> getWeeklyPlanItems(Plan plan) {
+    private List<PlanItem> getWeeklyPlanItems(Plan plan) {
         return weeklyPlan.stream()
                 .map((item) -> new PlanItem(plan, ActivityType.valueOf(item.activityType()), GoalType.WEEKLY, item.targetValue()))
                 .toList();
