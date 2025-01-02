@@ -26,4 +26,5 @@ dependencies {
     testImplementation(testFixtures(project(":jabiseo-domain")))
     testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.h2database:h2'
 }
