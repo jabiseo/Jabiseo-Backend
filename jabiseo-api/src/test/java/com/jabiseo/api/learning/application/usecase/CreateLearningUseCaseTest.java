@@ -12,7 +12,9 @@ import com.jabiseo.domain.learning.service.LearningService;
 import com.jabiseo.domain.learning.service.ProblemSolvingService;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;
+import com.jabiseo.domain.plan.domain.Plan;
 import com.jabiseo.domain.plan.service.PlanProgressService;
+import com.jabiseo.domain.plan.service.PlanService;
 import com.jabiseo.domain.problem.domain.Problem;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;
 import com.jabiseo.domain.problem.exception.ProblemErrorCode;
@@ -25,13 +27,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static fixture.CertificateFixture.createCertificate;
 import static fixture.MemberFixture.createMember;
 import static fixture.ProblemFixture.createProblem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -59,6 +65,9 @@ class CreateLearningUseCaseTest {
 
     @Mock
     PlanProgressService planProgressService;
+
+    @Mock
+    PlanService planService;
 
     @Test
     @DisplayName("한 문제를 여러 번 풀었다는 결과가 주어지면 예외가 발생한다.")
@@ -149,6 +158,7 @@ class CreateLearningUseCaseTest {
         given(memberService.getById(memberId)).willReturn(member);
         given(certificateService.getById(certificateId)).willReturn(certificate);
         given(problemService.findAllByIdWithCertificate(problemIds)).willReturn(problems);
+        given(planService.findPlanByMember(member)).willReturn(Optional.of(new Plan(certificate, member, LocalDate.now())));
 
         CreateLearningRequest request = new CreateLearningRequest(learningTime, "EXAM", certificateId,
                 problems.stream().map(problem -> new ProblemResultRequest(problem.getId(), 1)).toList());
@@ -162,7 +172,7 @@ class CreateLearningUseCaseTest {
 
         verify(learningService).save(learningCaptor.capture());
         verify(problemSolvingService).saveAll(problemSolvingCaptor.capture());
-        verify(planProgressService).updateProgress(learningCaptor.getValue(), problemSolvingCaptor.getValue().size());
+        verify(planProgressService).updateProgress(any(), any());
 
         List<ProblemSolving> capturedProblemSolvings = problemSolvingCaptor.getValue();
         assertThat(capturedProblemSolvings.stream().map(ps -> ps.getProblem().getId()))

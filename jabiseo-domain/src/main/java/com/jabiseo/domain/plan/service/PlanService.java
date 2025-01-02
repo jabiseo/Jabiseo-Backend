@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,16 +38,13 @@ public class PlanService {
                 .orElseThrow(() -> new PlanBusinessException(PlanErrorCode.NOT_FOUND_PLAN));
     }
 
-    @Transactional
-    public Plan savePlan(Plan plan) {
-        return planRepository.save(plan);
+    public Optional<Plan> findPlanByMember(Member member) {
+        return planRepository.findFirstByCertificateAndMember(member.getCurrentCertificate(), member);
     }
 
     @Transactional
-    public Plan savePlanAndItems(Plan plan, List<PlanItem> planItems) {
-        Plan saved = planRepository.save(plan);
-        planItemRepository.saveAll(planItems);
-        return saved;
+    public Plan savePlan(Plan plan) {
+        return planRepository.save(plan);
     }
 
     public void checkInProgressPlan(Member member) {

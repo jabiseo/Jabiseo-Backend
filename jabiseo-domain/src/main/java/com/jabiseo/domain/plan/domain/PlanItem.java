@@ -3,6 +3,7 @@ package com.jabiseo.domain.plan.domain;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -37,6 +39,7 @@ public class PlanItem {
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
+    @Builder
 
     public PlanItem(Plan plan, ActivityType activityType, GoalType goalType, Integer targetValue) {
         this.plan = plan;
@@ -58,6 +61,25 @@ public class PlanItem {
 
     public void updateTargetValue(Integer targetValue) {
         this.targetValue = targetValue;
+    }
+
+    // 비지니스 요구사항으로 같은 객체인지 판단
+    public boolean equalsItem(PlanItem other) {
+        if (other == null) return false;
+        return this.activityType.equals(other.getActivityType()) && this.goalType.equals(other.getGoalType());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlanItem planItem = (PlanItem) o;
+        return Objects.equals(id, planItem.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
 }

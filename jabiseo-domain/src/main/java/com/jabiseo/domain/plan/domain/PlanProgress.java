@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -59,5 +60,28 @@ public class PlanProgress {
 
     public void updateTargetValue(Integer value) {
         this.targetValue = value;
+    }
+
+    public boolean equalsProgress(PlanProgress other) {
+        if (other == null) return false;
+        return this.goalType.equals(other.getGoalType()) && this.activityType.equals(other.getActivityType());
+    }
+
+    public boolean equalsItems(PlanItem otherItems){
+        if (otherItems == null) return false;
+        return this.goalType.equals(otherItems.getGoalType()) && this.activityType.equals(otherItems.getActivityType());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlanProgress that = (PlanProgress) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

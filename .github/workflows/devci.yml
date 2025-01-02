@@ -32,11 +32,23 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
+      - name: save into application.properties
+        env:
+          DEV_VARIABLES: ${{ toJson(secrets) }}
+        run: |
+          echo "$DEV_VARIABLES" | jq -r 'to_entries | 
+          map(select(.key | startswith("DEV_")))[] | "\(.key | sub("^DEV_"; ""))=\(.value)"' > ./jabiseo-api/src/main/resources/application.properties
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: gradle build
         run: |
-          ./gradlew test -x bootJar
+          ./gradlew test -x bootJar --stacktrace --info
 
-
+      - name: upload and results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: jabiseo-api/build/reports/tests/test/

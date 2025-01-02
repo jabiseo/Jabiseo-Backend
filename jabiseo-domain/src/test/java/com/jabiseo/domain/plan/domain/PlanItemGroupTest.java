@@ -1,42 +1,31 @@
 package com.jabiseo.domain.plan.domain;
 
-import com.jabiseo.domain.certificate.domain.Certificate;
-import com.jabiseo.domain.member.domain.Member;
-import fixture.CertificateFixture;
-import fixture.MemberFixture;
 import fixture.PlanItemFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("플랜 Entity 테스트")
-class PlanTest {
+class PlanItemGroupTest {
 
-    Plan plan;
-    Certificate certificate; // setUp시 고정
-    Member member; // setUp시 고정
+    List<PlanItem> existingItems;
 
     @BeforeEach
     void setUp() throws Exception {
-        certificate = CertificateFixture.createCertificate();
-        member = MemberFixture.createMember();
-
-        List<PlanItem> originalItems = List.of(
+        existingItems = List.of(
                 mockDailyItem(ActivityType.STUDY),
                 mockDailyItem(ActivityType.EXAM),
                 mockDailyItem(ActivityType.PROBLEM),
                 mockWeeklyItem(ActivityType.STUDY),
                 mockWeeklyItem(ActivityType.EXAM)
         );
-        plan = new Plan(certificate, member, null, new PlanItemGroup(new ArrayList<>(originalItems)));
     }
+
 
     @Test
     @DisplayName("플랜 수정시, 기존 플랜의 값이 추가되거나 삭제된다.")
@@ -51,10 +40,11 @@ class PlanTest {
                 mockWeeklyItem(ActivityType.PROBLEM) // new item
         );
 
+        PlanItemGroup group = new PlanItemGroup(existingItems);
 
         //when
-        plan.modify(itemsRequest, LocalDate.now());
-        List<PlanItem> planItems = plan.getPlanItemGroup().getPlanItems();
+        group.modifyPlanItems(itemsRequest);
+        List<PlanItem> planItems = group.getPlanItems();
 
         //then
         assertThat(planItems.size()).isEqualTo(6);

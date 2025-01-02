@@ -27,7 +27,7 @@ public class FindActivePlanUseCase {
 
         Plan plan = planService.findFirstByCertificateAndMemberWithPlanItems(member.getCurrentCertificate(), member);
 
-        List<PlanItem> planItems = plan.getPlanItems();
+        List<PlanItem> planItems = plan.getPlanItemGroup().getPlanItems();
 
         return ActivePlanResponse.of(plan, planItems);
     }

@@ -3,6 +3,7 @@ package com.jabiseo.domain.learning.dto;
 import com.jabiseo.domain.learning.domain.Learning;
 import com.jabiseo.domain.learning.domain.LearningMode;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class LearningWithSolvingCountQueryDto {
 
