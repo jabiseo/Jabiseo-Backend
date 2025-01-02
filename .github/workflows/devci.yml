@@ -37,6 +37,11 @@ jobs:
 
       - name: gradle build
         run: |
-          ./gradlew test -x bootJar
+          ./gradlew test -x bootJar --stacktrace --info
 
-
+      - name: upload and results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: jabiseo-api/build/reports/tests/test/
