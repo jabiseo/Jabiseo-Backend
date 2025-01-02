@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +36,10 @@ public class PlanService {
     public Plan getPlanWithItems(Long planId) {
         return planRepository.findPlanWithItemsById(planId)
                 .orElseThrow(() -> new PlanBusinessException(PlanErrorCode.NOT_FOUND_PLAN));
+    }
+
+    public Optional<Plan> findPlanByMember(Member member) {
+        return planRepository.findFirstByCertificateAndMember(member.getCurrentCertificate(), member);
     }
 
     @Transactional

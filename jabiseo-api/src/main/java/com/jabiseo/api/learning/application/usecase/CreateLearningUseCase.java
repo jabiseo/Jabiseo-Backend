@@ -11,7 +11,10 @@ import com.jabiseo.domain.learning.service.LearningService;
 import com.jabiseo.domain.learning.service.ProblemSolvingService;
 import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.member.service.MemberService;
+import com.jabiseo.domain.plan.domain.Plan;
+import com.jabiseo.domain.plan.dto.LearningResult;
 import com.jabiseo.domain.plan.service.PlanProgressService;
+import com.jabiseo.domain.plan.service.PlanService;
 import com.jabiseo.domain.problem.domain.Problem;
 import com.jabiseo.domain.problem.exception.ProblemBusinessException;
 import com.jabiseo.domain.problem.exception.ProblemErrorCode;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +39,7 @@ public class CreateLearningUseCase {
     private final ProblemSolvingService problemSolvingService;
     private final PlanProgressService planProgressService;
     private final CertificateService certificateService;
+    private final PlanService planService;
 
     public Long execute(Long memberId, CreateLearningRequest request) {
 
@@ -55,7 +60,10 @@ public class CreateLearningUseCase {
         //ProblemSolving 생성 및 저장
         List<ProblemSolving> problemSolvings = createProblemSolvings(request, solvedProblems, member, learning);
         problemSolvingService.saveAll(problemSolvings);
-        planProgressService.updateProgress(learning, problemSolvings.size());
+
+        Optional<Plan> planByMember = planService.findPlanByMember(member);
+        planByMember.ifPresent(plan -> planProgressService.updateProgress(plan, LearningResult.valueOf(learning, (long) problemSolvings.size())));
+
         return learning.getId();
     }
 

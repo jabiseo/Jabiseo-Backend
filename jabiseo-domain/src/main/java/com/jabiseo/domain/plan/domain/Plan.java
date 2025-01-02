@@ -7,16 +7,15 @@ import com.jabiseo.domain.plan.exception.PlanBusinessException;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -54,6 +53,7 @@ public class Plan {
         this.endAt = endAt;
     }
 
+    @Builder
     public Plan(Certificate certificate, Member member, LocalDate endAt, PlanItemGroup planItemGroup) {
         this.certificate = certificate;
         this.member = member;
@@ -62,19 +62,10 @@ public class Plan {
     }
 
     public static Plan create(Member member, LocalDate endAt) {
-        return new Plan(member.getCurrentCertificate(), member, endAt);
-    }
-
-    public List<PlanItem> getNewItems(List<PlanItem> items) {
-        return planItemGroup.getNewItems(items);
-    }
-
-    public List<PlanItem> getExistItems(List<PlanItem> items) {
-        return planItemGroup.getExistItems(items);
-    }
-
-    public List<PlanItem> getDeletedItems(List<PlanItem> items) {
-        return planItemGroup.getDeletedItems(items);
+        return Plan.builder()
+                .member(member)
+                .endAt(endAt)
+                .build();
     }
 
 

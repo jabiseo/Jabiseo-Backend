@@ -3,6 +3,7 @@ package com.jabiseo.domain.plan.domain;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -38,6 +39,7 @@ public class PlanItem {
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
+    @Builder
 
     public PlanItem(Plan plan, ActivityType activityType, GoalType goalType, Integer targetValue) {
         this.plan = plan;

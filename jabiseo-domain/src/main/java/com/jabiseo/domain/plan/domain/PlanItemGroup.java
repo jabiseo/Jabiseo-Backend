@@ -25,18 +25,21 @@ public class PlanItemGroup {
     }
 
     public void modifyPlanItems(List<PlanItem> items) {
-        List<PlanItem> newItems = getNewItems(items);
-        List<PlanItem> existItems = getExistItems(items);
-        List<PlanItem> deletedItems = getDeletedItems(items);
+        planItems.removeIf(planItem -> items.stream().noneMatch((requestItem) -> requestItem.equalsItem(planItem)));
 
-        // 삭제될 아이템 삭제
-        planItems.removeIf(planItem -> deletedItems.stream().anyMatch((item) -> item.equalsItem(planItem)));
+        planItems.forEach(planItem -> updatePlanItemTargetValue(planItem, items));
 
-        // 이미 존재하는 items의 target value 수정 N*M
-        planItems.forEach((planItem -> planItem.updateTargetValue(findTargetValue(existItems, planItem))));
-
-        // 새 아이템 추가
+        List<PlanItem> newItems = items.stream()
+                .filter(item -> planItems.stream().noneMatch((currentItem) -> currentItem.equalsItem(item)))
+                .toList();
         planItems.addAll(newItems);
+    }
+    public boolean hasDailyItems() {
+        return planItems.stream().anyMatch((item) -> item.getGoalType().equals(GoalType.DAILY));
+    }
+
+    public boolean hasWeeklyItems() {
+        return planItems.stream().anyMatch((item) -> item.getGoalType().equals(GoalType.WEEKLY));
     }
 
 
@@ -44,31 +47,13 @@ public class PlanItemGroup {
         return planItems;
     }
 
-    public List<PlanItem> getNewItems(List<PlanItem> inputItems) {
-        return inputItems.stream()// 새로 들어온 아이템들 중
-                .filter(item -> planItems.stream().noneMatch((currentItem) -> currentItem.equalsItem(item))) // 이미 있는 아이템과 매칭되지 않는 것
-                .toList();
+    private void updatePlanItemTargetValue(PlanItem planItem, List<PlanItem> items) {
+        items.stream()
+                .filter(item -> item.equalsItem(planItem))
+                .findFirst()
+                .ifPresent(matchingItem -> planItem.updateTargetValue(matchingItem.getTargetValue()));
     }
 
-    public List<PlanItem> getExistItems(List<PlanItem> inputItems) {
-        return inputItems.stream()// 새로 들어온 아이템들 중
-                .filter(item -> planItems.stream().anyMatch((currentItem) -> currentItem.equalsItem(item))) // 이미 있는 아이템과 매칭되는것
-                .toList();
-    }
-
-    public List<PlanItem> getDeletedItems(List<PlanItem> inputItems) {
-        return this.planItems.stream() // 기존 아이템들 중
-                .filter(item -> inputItems.stream().noneMatch((inputItem) -> inputItem.equalsItem(item))) // 새로 들어온 아이템과 매칭되지 않는 것.
-                .toList();
-    }
-
-    private int findTargetValue(List<PlanItem> source, PlanItem target) {
-        PlanItem find = source.stream()
-                .filter((item) -> item.equalsItem(target))
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("Target value not found"));
-        return find.getTargetValue();
-    }
 
 
 }

@@ -1,31 +1,22 @@
 package com.jabiseo.domain.plan.service;
 
-import com.jabiseo.domain.learning.domain.LearningMode;
-import com.jabiseo.domain.learning.repository.LearningRepository;
-import com.jabiseo.domain.learning.dto.LearningWithSolvingCountQueryDto;
-import com.jabiseo.domain.member.domain.Member;
 import com.jabiseo.domain.plan.domain.*;
 import com.jabiseo.domain.plan.repository.PlanProgressRepository;
-import fixture.MemberFixture;
-import fixture.PlanFixture;
-import fixture.PlanItemFixture;
-import org.junit.jupiter.api.BeforeEach;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static fixture.PlanProgressFixture.createPlanProgress;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,176 +24,109 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class PlanProgressServiceTest {
 
+
     @InjectMocks
-    private PlanProgressService planProgressService;
-    @Mock
-    private PlanProgressRepository planProgressRepository;
-    @Mock
-    private LearningRepository learningRepository;
+    PlanProgressService planProgressService;
 
     @Mock
-    private WeeklyDefineStrategy weeklyDefineStrategy;
+    WeeklyDefineStrategy weeklyDefineStrategy;
 
-    private Member member;
+    @Mock
+    PlanProgressCreateService planProgressCreateService;
 
-    @BeforeEach
-    void setUp() {
-        member = MemberFixture.createMember();
-    }
+    @Mock
+    PlanProgressRepository planProgressRepository;
 
-    @Test
-    @DisplayName("정상 동작 테스트, 주간  일간에 맞게 2번 호출한다")
-    void successCallSaveAllTwo() {
-        //given
-        List<PlanItem> planItems = Arrays.asList(
-                PlanItemFixture.createPlanItem(ActivityType.EXAM, GoalType.DAILY),
-                PlanItemFixture.createPlanItem(ActivityType.STUDY, GoalType.DAILY),
-                PlanItemFixture.createPlanItem(ActivityType.STUDY, GoalType.WEEKLY),
-                PlanItemFixture.createPlanItem(ActivityType.PROBLEM, GoalType.WEEKLY)
-        );
-        List<LearningWithSolvingCountQueryDto> queryDtos = List.of(new LearningWithSolvingCountQueryDto(LearningMode.EXAM, 10L, LocalDateTime.now(), 10L));
-        WeekPeriod currentWeekPeriod = new WeekPeriod(LocalDate.now().withDayOfMonth(1), LocalDate.now().plusDays(6));
+    @Mock
+    PlanProgressGroupFactory planProgressGroupFactory;
 
-        given(weeklyDefineStrategy.getWeekPeriod(LocalDate.now())).willReturn(currentWeekPeriod);
-        given(learningRepository.findLearningWithSolvingCount(member, member.getCurrentCertificate(),
-                LocalDate.now(), LocalDate.now())).willReturn(queryDtos);
-        given(learningRepository.findLearningWithSolvingCount(member, member.getCurrentCertificate(),
-                currentWeekPeriod.getStart(), currentWeekPeriod.getEnd())).willReturn(queryDtos);
-
-        //when
-        planProgressService.createCurrentPlanProgress(member, planItems);
-
-        //then
-        verify(planProgressRepository, times(2)).saveAll(any());
-    }
 
     @Test
-    @DisplayName("없는 goalType에 대해 DB 로직 호출을 하지 않는다. ")
-    void callSaveAllOne() {
+    @DisplayName("update 호출 시 수정될 값들을 수정하고 저장한다. ")
+    void updateAndModifyTargetValue() {
         //given
-        List<PlanItem> planItems = Arrays.asList(
-                PlanItemFixture.createPlanItem(ActivityType.EXAM, GoalType.DAILY),
-                PlanItemFixture.createPlanItem(ActivityType.STUDY, GoalType.DAILY)
+        Plan plan = Plan.builder().build();
+        PlanProgressGroup groupWithInitdata = new PlanProgressGroup(List.of(
+                PlanProgress.builder().activityType(ActivityType.EXAM).goalType(GoalType.DAILY).targetValue(10).build(),
+                PlanProgress.builder().activityType(ActivityType.STUDY).goalType(GoalType.DAILY).targetValue(10).build() // removed
+        ), weeklyDefineStrategy);
+
+        given(planProgressGroupFactory.createWithInitialData(plan)).willReturn(groupWithInitdata);
+        List<PlanItem> inputPlanItems = List.of(
+                PlanItem.builder().activityType(ActivityType.EXAM).goalType(GoalType.DAILY).targetValue(20).build(),// exist
+                PlanItem.builder().activityType(ActivityType.TIME).goalType(GoalType.DAILY).targetValue(20).build() // newItem
         );
-        List<LearningWithSolvingCountQueryDto> queryDtos = List.of(new LearningWithSolvingCountQueryDto(LearningMode.EXAM, 10L, LocalDateTime.now(), 10L));
-
-        given(weeklyDefineStrategy.getWeekPeriod(LocalDate.now())).willReturn(new WeekPeriod(LocalDate.now(), LocalDate.now().plusDays(1)));
-        given(learningRepository.findLearningWithSolvingCount(member, member.getCurrentCertificate(),
-                LocalDate.now(), LocalDate.now())).willReturn(queryDtos);
-
-        //when
-        planProgressService.createCurrentPlanProgress(member, planItems);
-
-        //then
-        verify(planProgressRepository, times(1)).saveAll(any());
-    }
-
-    @Test
-    @DisplayName("calculateProgress 메소드 progress 계산 로직 테스트")
-    void calculateProgressTest() {
-        //given
-        List<PlanProgress> planProgresses = Arrays.asList(
-                createPlanProgress(LocalDate.now(), GoalType.DAILY, ActivityType.EXAM),
-                createPlanProgress(LocalDate.now(), GoalType.DAILY, ActivityType.STUDY),
-                createPlanProgress(LocalDate.now(), GoalType.DAILY, ActivityType.PROBLEM),
-                createPlanProgress(LocalDate.now(), GoalType.DAILY, ActivityType.TIME)
-        );
-        List<LearningWithSolvingCountQueryDto> datas = dummyDatas();
 
 
         //when
-        List<PlanProgress> result = planProgressService.calculateProgress(planProgresses, datas);
+        planProgressService.update(plan, inputPlanItems);
 
         //then
-        result.forEach((planProgress -> {
-            long expectedValue = -1;
-            if (planProgress.getActivityType().equals(ActivityType.EXAM)) {
-                expectedValue = datas.stream()
-                        .filter(pi -> pi.getMode().equals(LearningMode.EXAM))
-                        .count();
-            }
-            if (planProgress.getActivityType().equals(ActivityType.STUDY)) {
-                expectedValue = datas.stream()
-                        .filter(pi -> pi.getMode().equals(LearningMode.STUDY))
-                        .count();
-            }
-            if (planProgress.getActivityType().equals(ActivityType.PROBLEM)) {
-                expectedValue = datas.stream()
-                        .mapToLong(LearningWithSolvingCountQueryDto::getSolvingCount).sum();
-            }
-            if (planProgress.getActivityType().equals(ActivityType.TIME)) {
-                expectedValue = datas.stream()
-                        .mapToLong(LearningWithSolvingCountQueryDto::getLearningTime).sum();
-            }
+        ArgumentCaptor<List<PlanProgress>> captor = ArgumentCaptor.forClass(List.class);
+        verify(planProgressRepository, times(1)).saveAll(captor.capture());
+        List<PlanProgress> savedValues = captor.getValue();
+        assertThat(savedValues).hasSize(1);
+        assertThat(savedValues.get(0).getActivityType()).isEqualTo(ActivityType.EXAM);
+        assertThat(savedValues.get(0).getGoalType()).isEqualTo(GoalType.DAILY);
+        assertThat(savedValues.get(0).getTargetValue()).isEqualTo(20);
+    }
 
-            assertThat(planProgress.getCompletedValue()).isEqualTo(expectedValue);
-        }));
+    @Test
+    @DisplayName("update 호출 시 삭제 될 Progress들을 삭제한다. ")
+    void updateAndRemoveProgress() {
+        //given
+        Plan plan = Plan.builder().build();
+        PlanProgressGroup groupWithInitdata = new PlanProgressGroup(List.of(
+                PlanProgress.builder().activityType(ActivityType.EXAM).goalType(GoalType.DAILY).targetValue(10).build(),
+                PlanProgress.builder().activityType(ActivityType.STUDY).goalType(GoalType.DAILY).targetValue(10).build() // removed
+        ), weeklyDefineStrategy);
 
+        given(planProgressGroupFactory.createWithInitialData(plan)).willReturn(groupWithInitdata);
+        List<PlanItem> inputPlanItems = List.of(
+                PlanItem.builder().activityType(ActivityType.EXAM).goalType(GoalType.DAILY).targetValue(20).build(),// exist
+                PlanItem.builder().activityType(ActivityType.TIME).goalType(GoalType.DAILY).targetValue(20).build() // newItem
+        );
+
+
+        //when
+        planProgressService.update(plan, inputPlanItems);
+
+        //then
+        ArgumentCaptor<List<PlanProgress>> captor = ArgumentCaptor.forClass(List.class);
+        verify(planProgressRepository, times(1)).deleteAll(captor.capture());
+        List<PlanProgress> savedValues = captor.getValue();
+        assertThat(savedValues).hasSize(1);
+        assertThat(savedValues.get(0).getActivityType()).isEqualTo(ActivityType.STUDY);
+        assertThat(savedValues.get(0).getGoalType()).isEqualTo(GoalType.DAILY);
     }
 
 
     @Test
-    @DisplayName("modifyCurrentPlanProgress 메소드 PlanProgress의 값을 변경한다.")
-    void modifyCurrentPlanProgressTest() {
+    @DisplayName("update 호출 시 추가될 값들은 CreateService에 위임한다. ")
+    void updateAndNewItemDelegatingCreateService() {
         //given
-        Plan plan = PlanFixture.createPlan(member, 1L);
-        List<PlanItem> modifiedPlanItems = Arrays.asList(
-                new PlanItem(plan, ActivityType.EXAM, GoalType.DAILY, 10),
-                new PlanItem(plan, ActivityType.STUDY, GoalType.DAILY, 5)
-        );
-        List<PlanProgress> dbSavedPlanProgress = Arrays.asList(
-                new PlanProgress(plan, LocalDate.now(), ActivityType.EXAM, GoalType.DAILY, 5, 0L), //수정될 대상 - 1
-                new PlanProgress(plan, LocalDate.now(), ActivityType.STUDY, GoalType.DAILY, 5, 0L), //수정될 대상 - 2
-                new PlanProgress(plan, LocalDate.now(), ActivityType.PROBLEM, GoalType.DAILY, 5, 0L) //수정이 되면 안됨 - 1
-        );
-        given(planProgressRepository.findAllByPlanAndProgressDateBetweenAndGoalType(plan, LocalDate.now(), LocalDate.now(), GoalType.DAILY)).willReturn(dbSavedPlanProgress);
+        Plan plan = Plan.builder().build();
+        PlanProgressGroup groupWithInitdata = new PlanProgressGroup(List.of(
+                PlanProgress.builder().activityType(ActivityType.EXAM).goalType(GoalType.DAILY).targetValue(10).build(),
+                PlanProgress.builder().activityType(ActivityType.STUDY).goalType(GoalType.DAILY).targetValue(10).build() // removed
+        ), weeklyDefineStrategy);
 
-        //when
-        planProgressService.modifyCurrentPlanProgress(plan, modifiedPlanItems, List.of());
-
-        //then
-        assertThat(dbSavedPlanProgress.get(0).getTargetValue()).isEqualTo(modifiedPlanItems.get(0).getTargetValue());
-        assertThat(dbSavedPlanProgress.get(1).getTargetValue()).isEqualTo(modifiedPlanItems.get(1).getTargetValue());
-    }
-
-    @Test
-    @DisplayName("removeCurrentPlanProgress 메소드, 삭제되는 PlanProgress를 삭제한다.")
-    void removePlanProgressTest(){
-        //given
-        Plan plan = PlanFixture.createPlan(member, 1L);
-        List<PlanItem> removePlanItems = Arrays.asList(
-                new PlanItem(plan, ActivityType.EXAM, GoalType.DAILY, 10),
-                new PlanItem(plan, ActivityType.STUDY, GoalType.DAILY, 5)
+        given(planProgressGroupFactory.createWithInitialData(plan)).willReturn(groupWithInitdata);
+        List<PlanItem> inputPlanItems = List.of(
+                PlanItem.builder().activityType(ActivityType.EXAM).goalType(GoalType.DAILY).targetValue(20).build(),// exist
+                PlanItem.builder().activityType(ActivityType.TIME).goalType(GoalType.DAILY).targetValue(20).build() // newItem
         );
-        List<PlanProgress> dbSavedPlanProgress = Arrays.asList(
-                new PlanProgress(plan, LocalDate.now(), ActivityType.EXAM, GoalType.DAILY, 5, 0L), //삭제될 대상 -1
-                new PlanProgress(plan, LocalDate.now(), ActivityType.STUDY, GoalType.DAILY, 5, 0L), //삭제될 대상 - 2
-                new PlanProgress(plan, LocalDate.now(), ActivityType.PROBLEM, GoalType.DAILY, 5, 0L)
-        );
-        given(planProgressRepository.findAllByPlanAndProgressDateBetweenAndGoalType(plan, LocalDate.now(), LocalDate.now(), GoalType.DAILY)).willReturn(dbSavedPlanProgress);
 
 
         //when
-        planProgressService.removeCurrentPlanProgress(plan, removePlanItems, List.of());
+        planProgressService.update(plan, inputPlanItems);
 
         //then
-        verify(planProgressRepository, times(2)).delete(any());
-    }
-
-
-    private List<LearningWithSolvingCountQueryDto> dummyDatas() {
-        List<LearningWithSolvingCountQueryDto> datas = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now();
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.EXAM, 5000L, now, 1L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.EXAM, 5000L, now, 2L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.EXAM, 5000L, now, 3L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.EXAM, 5000L, now, 4L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.STUDY, 5000L, now, 5L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.STUDY, 5000L, now, 6L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.STUDY, 5000L, now, 7L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.STUDY, 5000L, now, 8L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.STUDY, 5000L, now, 9L));
-        datas.add(new LearningWithSolvingCountQueryDto(LearningMode.EXAM, 5000L, now, 10L));
-        return datas;
+        ArgumentCaptor<PlanProgressGroup> captor = ArgumentCaptor.forClass(PlanProgressGroup.class);
+        verify(planProgressCreateService, times(1)).create(captor.capture(), eq(plan));
+        PlanProgressGroup result = captor.getValue();
+        assertThat(result.getProgresses()).hasSize(1);
+        assertThat(result.getProgresses().get(0).getActivityType()).isEqualTo(ActivityType.TIME);
+        assertThat(result.getProgresses().get(0).getGoalType()).isEqualTo(GoalType.DAILY);
     }
 }
